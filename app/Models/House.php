@@ -19,6 +19,9 @@ class House extends Model
     public function type(){
         return $this->belongsTo(Type::class,"type_id","id");
     }
+    public function user(){
+        return $this->belongsTo(User::class,"created_by","id");
+    }
     // Accessor
     public function getFromDateAttribute($value){
         return date("d-M-Y", strtotime($value));

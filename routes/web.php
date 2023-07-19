@@ -34,12 +34,14 @@ Route::post('Verify', 'App\Http\Controllers\user\RetrievePasswordController@Veri
 Route::get('UserDashboard', 'App\Http\Controllers\user\UserDashboardController@View')
 ->name('user_dashboard')->middleware('web_guard');
 
-
-Route::get('Find', 'App\Http\Controllers\user\UserDashboardController@FindView')
-->name('find_hc')->middleware('web_guard');
-
 Route::get('SignOut', 'App\Http\Controllers\user\UserDashboardController@SignOut')
 ->name('sign_out')->middleware('web_guard');
+
+// Find House
+Route::get('Find', 'App\Http\Controllers\user\FindController@FindView')
+->name('find_hc')->middleware('web_guard');
+Route::get('GetAvailableHouseList', 'App\Http\Controllers\user\FindController@GetAvailableHouseList')->middleware('web_guard');
+
 
 // Post Controller Starts From Here
 Route::get('Post', 'App\Http\Controllers\user\PostController@PostView')
@@ -54,10 +56,10 @@ Route::get('PostHistory', 'App\Http\Controllers\user\PostHistoryController@PostH
 ->name('post_history')->middleware('web_guard');
 Route::get('GetHouseList', 'App\Http\Controllers\user\PostHistoryController@GetHouseList')->middleware('web_guard');
 Route::get('MoveToTrash', 'App\Http\Controllers\user\PostHistoryController@MoveToTrash')->middleware('web_guard');
+Route::post('UpdateHouse', 'App\Http\Controllers\user\PostHistoryController@UpdateHouse')->middleware('web_guard');
 
 Route::get('MyTrash', 'App\Http\Controllers\user\PostHistoryController@MyTrashView')
 ->name('my_trash')->middleware('web_guard');
 Route::get('GetTrashHouseList', 'App\Http\Controllers\user\PostHistoryController@GetTrashHouseList')->middleware('web_guard');
 Route::get('RestoreHouse', 'App\Http\Controllers\user\PostHistoryController@RestoreHouse')->middleware('web_guard');
-Route::post('UpdateHouse', 'App\Http\Controllers\user\PostHistoryController@UpdateHouse')->middleware('web_guard');
 Route::get('DeleteHouse', 'App\Http\Controllers\user\PostHistoryController@DeleteHouse')->middleware('web_guard');
