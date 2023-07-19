@@ -59,4 +59,5 @@ Route::get('MyTrash', 'App\Http\Controllers\user\PostHistoryController@MyTrashVi
 ->name('my_trash')->middleware('web_guard');
 Route::get('GetTrashHouseList', 'App\Http\Controllers\user\PostHistoryController@GetTrashHouseList')->middleware('web_guard');
 Route::get('RestoreHouse', 'App\Http\Controllers\user\PostHistoryController@RestoreHouse')->middleware('web_guard');
+Route::post('UpdateHouse', 'App\Http\Controllers\user\PostHistoryController@UpdateHouse')->middleware('web_guard');
 Route::get('DeleteHouse', 'App\Http\Controllers\user\PostHistoryController@DeleteHouse')->middleware('web_guard');

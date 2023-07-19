@@ -19,7 +19,7 @@ class PostHistoryController extends Controller
         $output = array('status' => '', 'aaData[]' => array());
         
         $house_details = House::with('city:city_name,id','area:area_name,id','type:type,id')
-        ->select("id", "advance","city_id", "area_id", "type_id", "rent", "from_date", "contact_no", "detailed_address")
+        ->select("id", "advance","city_id", "area_id", "type_id", "rent", "from_date", "contact_no", "detailed_address", "image")
         ->where('created_by', session('id'))
         ->get();
         
@@ -55,6 +55,53 @@ class PostHistoryController extends Controller
        return $output;
     }
 
+    public function UpdateHouse(Request $request){
+        $request->validate(
+            [
+                "selCity" => "required",
+                "selArea" => "required",
+                "selHouseType" => "required",
+                "txtAdvance" => "required|integer",
+                "txtRentAmount" => "required|integer",
+                "txtAvailableFromDate" => "required",
+                "txtContactNo" => "required|digits_between:10,10",
+                "txtDetailedAddress" => "required"
+            ],
+            [
+                'selCity.required' => 'City is required',
+                'selArea.required' => 'Area is required',
+                'selHouseType.required' => 'Type is required',
+                'txtAdvance.required' => 'Advance required',
+                'txtRentAmount.required' => 'Rent is required',
+                'txtAvailableFromDate.required' => 'Available From is required',
+                'txtContactNo.required' => 'Contact no. is required',
+                'txtDetailedAddress.required' => 'Address is required',
+
+                'txtAdvance.integer' => 'Advance must be a number',
+                'txtRentAmount.integer' => 'Rent must be a number',
+                'txtContactNo.digits_between' => 'Contact no shoud be 10 digits'
+            ]
+        );
+
+        $house = House::find($request['id']);
+            $house->city_id = $request['selCity'];
+            $house->area_id = $request['selArea'];
+            $house->type_id = $request['selHouseType'];
+            $house->advance = $request['txtAdvance'];
+            $house->rent = $request['txtRentAmount'];
+            $house->from_date = $request['txtAvailableFromDate'];
+            $house->contact_no = $request['txtContactNo'];
+            $house->detailed_address = $request['txtDetailedAddress'];
+            $house->updated_by = session('id');
+            $house->updated_at = date("Y-m-d H:i:s");
+            $house->status = 1;
+            $house->save();
+           
+            $output['status'] = 'Success';
+            $output['message'] = 'Data updated successfully';
+           
+           return $output;
+    }
 // Trash Functions-------------------------------------------
     public function MyTrashView(){
         return view("user.trash");

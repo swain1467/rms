@@ -19,7 +19,12 @@ class House extends Model
     public function type(){
         return $this->belongsTo(Type::class,"type_id","id");
     }
+    // Accessor
     public function getFromDateAttribute($value){
         return date("d-M-Y", strtotime($value));
+    }
+    // Mutator
+    public function setFromDateAttribute($value){
+        $this->attributes['from_date'] = date("Y-m-d", strtotime($value));
     }
 }

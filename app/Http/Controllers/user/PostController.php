@@ -111,7 +111,7 @@ class PostController extends Controller
             $house->type_id = $request['selHouseType'];
             $house->advance = $request['txtAdvance'];
             $house->rent = $request['txtRentAmount'];
-            $house->from_date = date("Y-m-d", strtotime($request['txtAvailableFromDate']));
+            $house->from_date = $request['txtAvailableFromDate'];
             $house->contact_no = $request['txtContactNo'];
             $house->detailed_address = $request['txtDetailedAddress'];
             $house->created_by = session('id');

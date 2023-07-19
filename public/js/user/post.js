@@ -51,6 +51,11 @@ function LoadAreaSelectize() {
                     selectize.addOption({ value: data.id, text: data.area_name });
                 }
             });
+            //This is a conditional selectize
+            if ($("#hidArea").val()) {
+                $('#selArea').selectize()[0].selectize.setValue($("#hidArea").val());
+            }
+            $("#hidArea").val('');
         },
         error: function () {
             toastr.error('Unable to load area selectize');
