@@ -12,6 +12,9 @@
 </div>
 <br>
 <div id="mySidepanel" class="sidepanel">
+    @if(session('user_type')=="ADMIN")
+        <a href="{{route('admin_dashboard')}}">Admin Dashboard</a> 
+    @endif
     <a href="{{route('user_dashboard')}}">Dashboard</a>
     <a href="{{route('find_hc')}}">Find A House/ Commercial Place</a>
     <a href="{{route('post_hc')}}">Post A House/ Commercial Place</a>

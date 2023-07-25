@@ -63,3 +63,19 @@ Route::get('MyTrash', 'App\Http\Controllers\user\PostHistoryController@MyTrashVi
 Route::get('GetTrashHouseList', 'App\Http\Controllers\user\PostHistoryController@GetTrashHouseList')->middleware('web_guard');
 Route::get('RestoreHouse', 'App\Http\Controllers\user\PostHistoryController@RestoreHouse')->middleware('web_guard');
 Route::get('DeleteHouse', 'App\Http\Controllers\user\PostHistoryController@DeleteHouse')->middleware('web_guard');
+
+// Admin Pages Starts from Here
+Route::get('AdminDashboard', 'App\Http\Controllers\admin\AdminDashboardController@AdminDashboardView')
+->name('admin_dashboard')->middleware('admin_guard');
+
+Route::get('ActiveUsers', 'App\Http\Controllers\admin\UserController@ActiveUsersView')
+->name('active_users')->middleware('admin_guard');
+
+Route::get('BlackListedUsers', 'App\Http\Controllers\admin\UserController@BlackListedUsersView')
+->name('black_listed_users')->middleware('admin_guard');
+
+Route::get('Setup', 'App\Http\Controllers\admin\SetupController@SetupView')
+->name('setup')->middleware('admin_guard');
+
+Route::get('Transition', 'App\Http\Controllers\admin\TransitionController@TransitionView')
+->name('transition')->middleware('admin_guard');
