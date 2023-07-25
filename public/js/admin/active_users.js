@@ -1,59 +1,88 @@
 $(document).ready(function () {
-    LoadHouseDataTable();
-    let dtblHouse = $('#dtblHouse').DataTable({
-        bPaginate: false,
+    $("#btnSignOut").click(function () {
+        let text = 'Are you sure? want to logout.'
+        if (confirm(text) == true) {
+            window.open("../User/SignOut", "_self");
+        }
+    });
+    let dtblUserList = $('#dtblUserList').DataTable({
+        lengthMenu: [
+            [10, 25, 50, 100, 200, 500, 1000],
+            [10, 25, 50, 100, 200, 500, 1000],
+        ],
+        pageLength: 10,
+        bProcessing: true,//server side pagination
+        bServerSide: true,//server side pagination
+        ajax: {
+            "url": "GetActiveUsersList",
+            "type": "GET"
+        },
+        bStateSave: false,
+        bPaginate: true,
+        bLengthChange: true,
+        bFilter: true,
+        bSort: false,
+        bInfo: true,
+        bAutoWidth: false,
         bDestroy: true,
-        "sDom": "<'row'<'col-lg-3 col-md-3 col-sm-3'l>>" +
-            "<'row'<'col-lg-12 col-md-12 col-sm-12'tr>>" +
-            "<'row'<'col-lg-9 col-md-9 col-sm-9'i><'col-lg-3 col-md-3 col-sm-3'p>>",
+        "sDom": "<'row'<'col-lg-5 col-md-5 col-sm-5 col-xs-5'><'col-lg-3 col-md-3 col-sm-3 col-xs-3' l><'col-lg-4 col-md-4 col-sm-4 col-xs-4' f>>" +
+            "<'row'<'col-lg-12 col-md-12 col-sm-12 col-xs-12'tr>>" +
+            "<'row'<'col-lg-9 col-md-9 col-sm-9 col-xs-9'i><'col-lg-3 col-md-3 col-sm-3 col-xs-3'p>>",
         "aoColumns": [
-            {
-                "data": 'type.type', "name": "type.type", "sWidth": "70%",
-                mRender: function (data, type, val) {
-                    return `<button class='btn btn-danger btn-xs action-btn' onclick='MoveToTrash(event)'><i class='fa fa-trash'></i></button>
-                    &nbsp; ${val.type.type}
-                    <button class='pull-right btn btn-warning btn-xs action-btn' onclick='UpdateHouse(event)'><i class='fa fa-edit'></i></button>`;
+            { "data": 'sl_no', "name": "sl_no", "sWidth": "10%", "className": "text-center" },
+            { "data": 'name', "name": "name", "sWidth": "30%" },
+            { "data": 'email', "name": "email", "sWidth": "30%" },
+            { "data": 'user_type', "name": "user_type", "sWidth": "15%", "className": "text-center",
+            mRender: function (data, type, val) {
+                    if (val.user_type=='ADMIN') {
+                        return `<b><span class="text-danger">Admin</span></b>`;
+                    }
+                    else if(val.user_type =='EMPLOYEE'){
+                        return `<b><span class="text-warning">Employee</span></b>`;
+                    }else{
+                        return `<b><span class="text-success">User</span></b>`;
+                    }
                 }
             },
-            { "data": 'from_date', "name": "from_date", "sWidth": "30%", "className":"text-center" }
+            {
+                "data": null, "name": "action", "sWidth": "15%", "className": "text-center",
+                "defaultContent": `<button class='btn btn-success btn-sm action-btn' onclick='UpdateUserDetails(event)'><i class='fa fa-edit'></i></button>
+                &nbsp;<button class='btn btn-warning btn-sm action-btn' onclick='BlackListUser(event)'><i class='fa fa-ban'></i></button>
+                &nbsp;<button class='btn btn-danger btn-sm action-btn' onclick='DeleteUser(event)'><i class='fa fa-trash'></i></button>`
+            }
         ]
     });
 
-    $("#btnSaveHouse").click(function () {
-        $("#btnSaveHouse").html('<i class="fa fa-gear fa-spin"></i>&nbsp;Updating...');
-        $("#btnSaveHouse").attr('disabled', true);
+    $("#btnUpdateUserDetails").click(function () {
+        $("#btnUpdateUserDetails").html('<i class="fa fa-gear fa-spin"></i>&nbsp;Updating...');
+        $("#btnUpdateUserDetails").attr('disabled', true);
 
         let _token = $("#_token").val();
-        let house_id = $("#txtHouseId").val();
-        let city = $("#selCity").val();
-        let area = $("#selArea").val();
-        let house_type = $("#selHouseType").val();
-        let advance = $("#txtAdvance").val();
-        let rent = $("#txtRentAmount").val();
-        let from_date = $("#txtAvailableFromDate").val();
-        let address = $("#txtDetailedAddress").val();
-        var contact = $("#txtContactNo").val();
+        let id = $("#txtUserId").val();
+        let name = $("#txtName").val();
+        let email = $("#txtEmail").val();
+        let user_type = $("#selUserType").val();
+       
         $.ajax({
-            url: "UpdateHouse",
+            url: "UpdateUserDetails",
             type: "POST",
             data: {
-                _token: _token, id: house_id, selCity: city, selArea: area, selHouseType: house_type, txtAdvance: advance
-                , txtRentAmount: rent, txtAvailableFromDate: from_date, txtContactNo: contact, txtDetailedAddress: address
+                _token:_token, id: id, name: name, email: email, user_type: user_type
             },
             success: function (response) {
                 if (response.status == 'Success') {
-                    LoadHouseDataTable();
+                    dtblUserList.ajax.reload();
                     toastr.success(response.message);
-                    $("#btnSaveHouse").html('<i class="fa fa-edit"></i> Update');
-                    $("#btnSaveHouse").removeAttr('disabled');
-                    $('#modalHouse').modal('hide');
+                    $("#btnUpdateUserDetails").html('<i class="fa fa-edit"></i> Update');
+                    $("#btnUpdateUserDetails").removeAttr('disabled');
+                    $('#modaUserDetails').modal('hide');
                 } else if (response.status == 'Error') {
-                    $("#btnSaveHouse").html('<i class="fa fa-edit"></i> Update');
-                    $("#btnSaveHouse").removeAttr('disabled');
+                    $("#btnUpdateUserDetails").html('<i class="fa fa-edit"></i> Update');
+                    $("#btnUpdateUserDetails").removeAttr('disabled');
                     toastr.warning(response.message);
                 } else {
-                    $("#btnSaveHouse").html('<i class="fa fa-edit"></i> Update');
-                    $("#btnSaveHouse").removeAttr('disabled');
+                    $("#btnUpdateUserDetails").html('<i class="fa fa-edit"></i> Update');
+                    $("#btnUpdateUserDetails").removeAttr('disabled');
                     toastr.error(response.message);
                 }
             },
@@ -63,27 +92,9 @@ $(document).ready(function () {
         });
     });
 });
-
-
-function LoadHouseDataTable() {
-    $.ajax({
-        "url": "GetHouseList",
-        type: "GET",
-        success: function (response) {
-            // var res = JSON.parse(response);
-            var table = $('#dtblHouse').DataTable();
-            table.clear().draw();
-            table.rows.add(response.aaData).draw();
-        },
-        error: function () {
-            toastr.error('Unable to load table please contact support');
-        }
-    });
-}
-
-function MoveToTrash(event) {
-    var dtblHouse = $('#dtblHouse').dataTable();
-    $(dtblHouse.fnSettings().aoData).each(function () {
+function UpdateUserDetails(event) {
+    var dtblUserList = $('#dtblUserList').dataTable();
+    $(dtblUserList.fnSettings().aoData).each(function () {
         $(this.nTr).removeClass('success');
     });
     var row;
@@ -91,10 +102,36 @@ function MoveToTrash(event) {
         row = event.target.parentNode.parentNode;
     else if (event.target.tagName == "I")
         row = event.target.parentNode.parentNode.parentNode;
-    var id = dtblHouse.fnGetData(row)['id'];
+
+    $("#modaUserDetailsHeader").html('Update User Details');
+    $("#btnUpdateUserDetails").html('<i class="fa fa-edit"></i>&nbsp;Update');
+    $("#btnUpdateUserDetails").removeAttr('disabled');
+
+    $("#txtUserId").val(dtblUserList.fnGetData(row)['id']);
+    $("#txtName").val(dtblUserList.fnGetData(row)['name']);
+    $("#txtEmail").val(dtblUserList.fnGetData(row)['email']);
+    $("#selUserType").val(dtblUserList.fnGetData(row)['user_type']);
+    if (dtblUserList.fnGetData(row)['status']) {
+        $("#txtActive").prop("checked", true);
+    } else {
+        $("#txtInactive").prop("checked", true);
+    }
+    $('#modaUserDetails').modal('show');
+}
+function BlackListUser(event) {
+    var dtblUserList = $('#dtblUserList').dataTable();
+    $(dtblUserList.fnSettings().aoData).each(function () {
+        $(this.nTr).removeClass('success');
+    });
+    var row;
+    if (event.target.tagName == "BUTTON" || event.target.tagName == "A")
+        row = event.target.parentNode.parentNode;
+    else if (event.target.tagName == "I")
+        row = event.target.parentNode.parentNode.parentNode;
+    var id = dtblUserList.fnGetData(row)['id'];
     swal({
-        title: 'Are you sure to move this to trash ?',
-        text: "It will not visible to any tenant",
+        title: 'Are you sure to black list this user ?',
+        text: "",
         type: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#d33',
@@ -103,12 +140,12 @@ function MoveToTrash(event) {
         animation: false
     }).then(function () {
         $.ajax({
-            url: "MoveToTrash",
+            url: "BlackListUser",
             type: "GET",
             data: { id: id },
             success: function (response) {
                 if (response.status == 'Success') {
-                    LoadHouseDataTable();
+                    $('#dtblUserList').DataTable().ajax.reload();
                     toastr.success(response.message);
                 } else {
                     toastr.error(response.message);
@@ -120,10 +157,9 @@ function MoveToTrash(event) {
         });
     }, function (dismiss) { }).done();
 }
-
-function UpdateHouse(event) {
-    var dtblHouse = $('#dtblHouse').dataTable();
-    $(dtblHouse.fnSettings().aoData).each(function () {
+function DeleteUser(event) {
+    var dtblUserList = $('#dtblUserList').dataTable();
+    $(dtblUserList.fnSettings().aoData).each(function () {
         $(this.nTr).removeClass('success');
     });
     var row;
@@ -131,19 +167,32 @@ function UpdateHouse(event) {
         row = event.target.parentNode.parentNode;
     else if (event.target.tagName == "I")
         row = event.target.parentNode.parentNode.parentNode;
-
-    $("#modalHouseHeader").html('Update House/Commercial Place Details');
-    $("#btnSaveHouse").html('<i class="fa fa-edit"></i>&nbsp;Update');
-    $("#btnSaveHouse").removeAttr('disabled');
-    $("#txtHouseId").val(dtblHouse.fnGetData(row)['id']);
-    $("#txtHouseCode").attr('disabled', true);
-    $('#selCity').selectize()[0].selectize.setValue(dtblHouse.fnGetData(row)['city'].id);
-    $("#hidArea").val(dtblHouse.fnGetData(row)['area'].id);
-    $('#selHouseType').selectize()[0].selectize.setValue(dtblHouse.fnGetData(row)['type'].id);
-    $("#txtAdvance").val(dtblHouse.fnGetData(row)['advance']);
-    $("#txtRentAmount").val(dtblHouse.fnGetData(row)['rent']);
-    $("#txtAvailableFromDate").val(dtblHouse.fnGetData(row)['from_date']);
-    $("#txtContactNo").val(dtblHouse.fnGetData(row)['contact_no']);
-    $("#txtDetailedAddress").val(dtblHouse.fnGetData(row)['detailed_address']);
-    $('#modalHouse').modal('show');
+    var id = dtblUserList.fnGetData(row)['id'];
+    swal({
+        title: 'Are you sure to delete ?',
+        text: "You can not reverse this.",
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Yes',
+        animation: false
+    }).then(function () {
+        $.ajax({
+            url: "DeleteUser",
+            type: "GET",
+            data: { id: id },
+            success: function (response) {
+                if (response.status == 'Success') {
+                    $('#dtblUserList').DataTable().ajax.reload();
+                    toastr.success(response.message);
+                } else {
+                    toastr.error(response.message);
+                }
+            },
+            error: function () {
+                toastr.error('Unable to process please contact support');
+            }
+        });
+    }, function (dismiss) { }).done();
 }

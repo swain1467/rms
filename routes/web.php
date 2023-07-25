@@ -70,6 +70,10 @@ Route::get('AdminDashboard', 'App\Http\Controllers\admin\AdminDashboardControlle
 
 Route::get('ActiveUsers', 'App\Http\Controllers\admin\UserController@ActiveUsersView')
 ->name('active_users')->middleware('admin_guard');
+Route::get('GetActiveUsersList', 'App\Http\Controllers\admin\UserController@GetActiveUsersList')->middleware('admin_guard');
+Route::post('UpdateUserDetails', 'App\Http\Controllers\admin\UserController@UpdateUserDetails')->middleware('admin_guard');
+Route::get('BlackListUser', 'App\Http\Controllers\admin\UserController@BlackListUser')->middleware('admin_guard');
+Route::get('DeleteUser', 'App\Http\Controllers\admin\UserController@DeleteUser')->middleware('admin_guard');
 
 Route::get('BlackListedUsers', 'App\Http\Controllers\admin\UserController@BlackListedUsersView')
 ->name('black_listed_users')->middleware('admin_guard');
