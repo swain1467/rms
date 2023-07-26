@@ -94,3 +94,5 @@ Route::post('SaveHouseType', 'App\Http\Controllers\admin\SetupController@SaveHou
 Route::get('Transition', 'App\Http\Controllers\admin\TransitionController@TransitionView')
 ->name('transition')->middleware('admin_guard');
 Route::get('GetHouseDetailsList', 'App\Http\Controllers\admin\TransitionController@GetHouseDetailsList')->middleware('admin_guard');
+Route::post('UpdateHouseDetails', 'App\Http\Controllers\admin\TransitionController@UpdateHouseDetails')->middleware('admin_guard');
+Route::get('DeleteHD', 'App\Http\Controllers\admin\TransitionController@DeleteHD')->middleware('admin_guard');

@@ -1,9 +1,9 @@
 $(document).ready(function () {
-    // LoadCitySelectize();
-    // LoadHouseTypeSelectize();
-    // $("#selHDCity").change(function () {
-    //     LoadAreaSelectize();
-    // });
+    LoadCitySelectize();
+    LoadHouseTypeSelectize();
+    $("#selHDCity").change(function () {
+        LoadAreaSelectize();
+    });
     $('#txtAvailableFromDate').datepicker({
         format: "dd-M-yyyy",
         todayHighlight: true,
@@ -48,14 +48,27 @@ $(document).ready(function () {
             { "data": 'area.area_name', "name": "area.area_name", "sWidth": "15%" },
             { "data": 'city.city_name', "name": "city.city_name", "sWidth": "15%" },
             {
-                "data": null, "name": "action", "sWidth": "15%", "className": "text-center",
-                "defaultContent": `<button class='btn btn-warning btn-sm action-btn' onclick='UpdateHD(event)'><i class='fa fa-edit'></i></button>`
+                "data": 'status', "name": "status", "sWidth": "5%", "className": "text-center",
+                mRender: function (data, type, val) {
+                    if (val.status) {
+                        return `<i class='fa fa-check' style='color:green; font-weight:bolder'></i>`;
+                    }
+                    else {
+                        return `<i class='fa fa-times' style='color:red; font-weight:bolder'></i>`;
+                    }
+                }
+            },
+            
+            {
+                "data": null, "name": "action", "sWidth": "10%", "className": "text-center",
+                "defaultContent": `<button class='btn btn-warning btn-sm action-btn' onclick='UpdateHD(event)'><i class='fa fa-edit'></i></button>
+                &nbsp; <button class='btn btn-danger btn-sm action-btn' onclick='DeleteHD(event)'><i class='fa fa-trash'></i></button>`
             }
         ],
-        buttons: [{
-            text: `<button id="addCity" class="btn btn-success btn-sm"><i class="fa fa-plus"></i>&nbsp;Add</button>
-            &nbsp; <button id="addCity" class="btn btn-dark btn-sm"><i class="fa fa-upload"></i>&nbsp;Bulk Upload</button>`,
-        }
+        buttons: [
+            {
+                text: `<button id="addCity" class="btn btn-dark btn-sm"><i class="fa fa-upload"></i>&nbsp;Bulk Upload</button>`,
+            }
         ]
     });
 
@@ -63,6 +76,7 @@ $(document).ready(function () {
         $("#btnSaveHD").html('<i class="fa fa-gear fa-spin"></i>&nbsp;Updating...');
         $("#btnSaveHD").attr('disabled', true);
 
+        let _token = $("#_token").val();
         let house_id = $("#txtHDId").val();
         let city = $("#selHDCity").val();
         let area = $("#selHDArea").val();
@@ -77,28 +91,27 @@ $(document).ready(function () {
             hd_status = 1
         }
         $.ajax({
-            url: "../api/AdminTransition?action=UpdateHouseDetails",
+            url: "UpdateHouseDetails",
             type: "POST",
             data: {
-                house_id: house_id, city: city, area: area, house_type: house_type, advance: advance,
-                rent: rent, from_date: from_date, contact: contact, address: address, hd_status: hd_status
+                _token: _token, id: house_id, selCity: city, selArea: area, selHouseType: house_type, txtAdvance: advance
+                , txtRentAmount: rent, txtAvailableFromDate: from_date, txtContactNo: contact, txtDetailedAddress: address, hdStatus: hd_status
             },
             success: function (response) {
-                var res = jQuery.parseJSON(response);
-                if (res.status == 'Success') {
+                if (response.status == 'Success') {
                     dtblHD.ajax.reload();
-                    toastr.success(res.message);
+                    toastr.success(response.message);
                     $("#btnSaveHD").html('<i class="fa fa-edit"></i> Update');
                     $("#btnSaveHD").removeAttr('disabled');
                     $('#modalHD').modal('hide');
-                } else if (res.status == 'Error') {
+                } else if (response.status == 'Error') {
                     $("#btnSaveHD").html('<i class="fa fa-edit"></i> Update');
                     $("#btnSaveHD").removeAttr('disabled');
-                    toastr.warning(res.message);
+                    toastr.warning(response.message);
                 } else {
                     $("#btnSaveHD").html('<i class="fa fa-edit"></i> Update');
                     $("#btnSaveHD").removeAttr('disabled');
-                    toastr.error(res.message);
+                    toastr.error(response.message);
                 }
             },
             error: function (response) {
@@ -109,27 +122,26 @@ $(document).ready(function () {
 });
 function LoadCitySelectize() {
     $.ajax({
-        url: "../api/AdminSetup?action=GetCity",
+        url: "GetCity",
         type: "GET",
         success: function (response) {
             var $select = $('#selHDCity').selectize();
             var selectize = $select[0].selectize;
             selectize.clear();
             selectize.clearOptions();
-            var res1 = JSON.parse(response);
-            $.each(res1.aaData, function (i, data) {
-                selectize.addOption({ value: data.city_id, text: data.city_name });
+            $.each(response.aaData, function (i, data) {
+                selectize.addOption({ value: data.id, text: data.city_name });
             });
         },
         error: function () {
-            toastr.error('Unable to load location selectize');
+            toastr.error('Unable to load city selectize');
         }
     });
 }
 function LoadAreaSelectize() {
     let city_id = $("#selHDCity").val();
     $.ajax({
-        "url": "../api/AdminSetup?action=GetAreaList",
+        "url": "GetArea",
         type: "get",
         data: { city_id: city_id },
         success: function (response) {
@@ -137,8 +149,7 @@ function LoadAreaSelectize() {
             var selectize = $select[0].selectize;
             selectize.clear();
             selectize.clearOptions();
-            var res1 = JSON.parse(response);
-            $.each(res1.aaData, function (i, data) {
+            $.each(response.aaData, function (i, data) {
                 if (data.status != 0) {
                     selectize.addOption({ value: data.id, text: data.area_name });
                 }
@@ -150,31 +161,31 @@ function LoadAreaSelectize() {
             $("#hidHDArea").val('');
         },
         error: function () {
-            toastr.error('Unable to Area selectize');
+            toastr.error('Unable to load area selectize');
         }
     });
 }
 function LoadHouseTypeSelectize() {
     $.ajax({
-        url: "../api/AdminSetup?action=GetHouseTypeList",
+        url: "GetType",
         type: "GET",
         success: function (response) {
             var $select = $('#selHDHouseType').selectize();
             var selectize = $select[0].selectize;
             selectize.clear();
             selectize.clearOptions();
-            var res1 = JSON.parse(response);
-            $.each(res1.aaData, function (i, data) {
+            $.each(response.aaData, function (i, data) {
                 if (data.status != 0) {
-                    selectize.addOption({ value: data.id, text: data.house_type });
+                    selectize.addOption({ value: data.id, text: data.type });
                 }
             });
         },
         error: function () {
-            toastr.error('Unable to load House Type selectize');
+            toastr.error('Unable to load Type selectize');
         }
     });
 }
+
 function UpdateHD(event) {
     var dtblHD = $('#dtblHD').dataTable();
     $(dtblHD.fnSettings().aoData).each(function () {
@@ -191,16 +202,12 @@ function UpdateHD(event) {
     $("#btnSaveHD").removeAttr('disabled');
 
     $("#txtHDId").val(dtblHD.fnGetData(row)['id']);
-    $("#txtHDCode").val(dtblHD.fnGetData(row)['code']);
-    $("#txtHDCode").attr('disabled', true);
-    $("#txtHDMailAddress").val(dtblHD.fnGetData(row)['mail_address']);
-    $("#txtHDMailAddress").attr('disabled', true);
-    $('#selHDCity').selectize()[0].selectize.setValue(dtblHD.fnGetData(row)['city']);
-    $("#hidHDArea").val(dtblHD.fnGetData(row)['area']);
-    $('#selHDHouseType').selectize()[0].selectize.setValue(dtblHD.fnGetData(row)['house_type']);
+    $('#selHDCity').selectize()[0].selectize.setValue(dtblHD.fnGetData(row)['city_id']);
+    $("#hidHDArea").val(dtblHD.fnGetData(row)['area_id']);
+    $('#selHDHouseType').selectize()[0].selectize.setValue(dtblHD.fnGetData(row)['type_id']);
     $("#txtHDAdvance").val(dtblHD.fnGetData(row)['advance']);
-    $("#txtHDRentAmount").val(dtblHD.fnGetData(row)['rent_per_month']);
-    $("#txtHDAvailableFromDate").val(dtblHD.fnGetData(row)['available_from']);
+    $("#txtHDRentAmount").val(dtblHD.fnGetData(row)['rent']);
+    $("#txtHDAvailableFromDate").val(dtblHD.fnGetData(row)['from_date']);
     $("#txtHDContactNo").val(dtblHD.fnGetData(row)['contact_no']);
     $("#txtHDDetailedAddress").val(dtblHD.fnGetData(row)['detailed_address']);
 
@@ -210,4 +217,44 @@ function UpdateHD(event) {
         $("#txtHDInactive").prop("checked", true);
     }
     $('#modalHD').modal('show');
+}
+
+function DeleteHD(event) {
+    var dtblHD = $('#dtblHD').dataTable();
+    $(dtblHD.fnSettings().aoData).each(function () {
+        $(this.nTr).removeClass('success');
+    });
+    var row;
+    if (event.target.tagName == "BUTTON" || event.target.tagName == "A")
+        row = event.target.parentNode.parentNode;
+    else if (event.target.tagName == "I")
+        row = event.target.parentNode.parentNode.parentNode;
+    var id = dtblHD.fnGetData(row)['id'];
+    swal({
+        title: 'Are you sure to delete ?',
+        text: "You can not reverse this.",
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Yes',
+        animation: false
+    }).then(function () {
+        $.ajax({
+            url: "DeleteHD",
+            type: "GET",
+            data: { id: id },
+            success: function (response) {
+                if (response.status == 'Success') {
+                    $('#dtblHD').DataTable().ajax.reload();
+                    toastr.success(response.message);
+                } else {
+                    toastr.error(response.message);
+                }
+            },
+            error: function () {
+                toastr.error('Unable to process please contact support');
+            }
+        });
+    }, function (dismiss) { }).done();
 }

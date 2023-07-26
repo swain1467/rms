@@ -56,32 +56,46 @@ class PostHistoryController extends Controller
     }
 
     public function UpdateHouse(Request $request){
-        $request->validate(
-            [
-                "selCity" => "required",
-                "selArea" => "required",
-                "selHouseType" => "required",
-                "txtAdvance" => "required|integer",
-                "txtRentAmount" => "required|integer",
-                "txtAvailableFromDate" => "required",
-                "txtContactNo" => "required|digits_between:10,10",
-                "txtDetailedAddress" => "required"
-            ],
-            [
-                'selCity.required' => 'City is required',
-                'selArea.required' => 'Area is required',
-                'selHouseType.required' => 'Type is required',
-                'txtAdvance.required' => 'Advance required',
-                'txtRentAmount.required' => 'Rent is required',
-                'txtAvailableFromDate.required' => 'Available From is required',
-                'txtContactNo.required' => 'Contact no. is required',
-                'txtDetailedAddress.required' => 'Address is required',
-
-                'txtAdvance.integer' => 'Advance must be a number',
-                'txtRentAmount.integer' => 'Rent must be a number',
-                'txtContactNo.digits_between' => 'Contact no shoud be 10 digits'
-            ]
-        );
+        if(!$request['selCity']){
+            $output['status'] = 'Error';
+            $output['message'] = 'City/Town is required';
+            return $output;
+        }
+        if(!$request['selArea']){
+            $output['status'] = 'Error';
+            $output['message'] = 'Area is required';
+            return $output;
+        }
+        if(!$request['selHouseType']){
+            $output['status'] = 'Error';
+            $output['message'] = 'City/Town is required';
+            return $output;
+        }
+        if(!$request['txtAdvance']){
+            $output['status'] = 'Error';
+            $output['message'] = 'Advance is required';
+            return $output;
+        }
+        if(!$request['txtRentAmount']){
+            $output['status'] = 'Error';
+            $output['message'] = 'Rent is required';
+            return $output;
+        }
+        if(!$request['txtAvailableFromDate']){
+            $output['status'] = 'Error';
+            $output['message'] = 'Available from date is required';
+            return $output;
+        }
+        if(!$request['txtContactNo']){
+            $output['status'] = 'Error';
+            $output['message'] = 'Contact number is required';
+            return $output;
+        }
+        if(!$request['txtDetailedAddress']){
+            $output['status'] = 'Error';
+            $output['message'] = 'Detailed address is required';
+            return $output;
+        }
 
         $house = House::find($request['id']);
             $house->city_id = $request['selCity'];

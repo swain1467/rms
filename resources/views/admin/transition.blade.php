@@ -23,64 +23,99 @@
                             <th class="text-center">Type</th>
                             <th class="text-center">Area</th>
                             <th class="text-center">City</th>
+                            <th class="text-center">Status</th>
                             <th class="text-center">Action</th>
                         </tr>
                     </thead>
                     <tbody></tbody>
                 </table>
 			</div>
-            <!-- Modal -->
-            <div id="modaUserDetails" class="modal fade" role="dialog">
+            
+            <div id="modalHD" class="modal fade" role="dialog">
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
                             <div class="col-lg-11 col-md-11 col-sm-11 col-xs-11">
-                                <h5 class="modal-title" id="modaUserDetailsHeader"></h5>
+                                <h5 class="modal-title" id="modalHDHeader"></h5>
                             </div>
                             <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1">
                                 <button type="button" class="close" data-dismiss="modal">&times;</button>
                             </div>
                         </div>
                         <div class="modal-body">
-                            <form class="form-horizontal" role="form" id="frmUserDetails">
+                            <form class="form-horizontal" role="form" id="frmHD">
                                 <input type="hidden" name="_token" id="_token" value="{{csrf_token()}}">
-                                <input type="hidden" class="form-control" name="txtUserId" id="txtUserId" autocomplete="off"/>
+                                <input type="hidden" class="form-control" name="txtHDId" id="txtHDId" autocomplete="off"/>
+                                <input type="hidden" class="form-control" name="hidHDArea" id="hidHDArea" autocomplete="off"/>
                                 <div class="form-group">
-                                    <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4  control-label" for="txtName">Name :&nbsp;<span class="text-danger">*</span></label>
-                                    <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
-                                        <input type="text" class="form-control" name="txtName" id="txtName" placeholder="Enter Full Name" autocomplete="off"/>
+                                    <label class="col-lg-12 col-md-12 col-sm-12 col-xs-12" for="selHDCity">City/Town :&nbsp;<span class="text-danger">*</span></label>
+                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                        <select class="form-control" id="selHDCity" name="selHDCity" placeholder="Select City/Town"></select>
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4  control-label" for="txtEmail">Email :&nbsp;<span class="text-danger">*</span></label>
-                                    <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
-                                        <input type="text" class="form-control" name="txtEmail" id="txtEmail" placeholder="Enter Mail Address" autocomplete="off"/>
+                                    <label class="col-lg-12 col-md-12 col-sm-12 col-xs-12" for="selHDArea">Area :&nbsp;<span class="text-danger">*</span></label>
+                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                        <select class="form-control" id="selHDArea" name="selHDArea" placeholder="Select Area"></select>
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4 control-label" for="selUserType">User Type :&nbsp;<span class="text-danger">*</span></label>
+                                    <label class="col-lg-12 col-md-12 col-sm-12 col-xs-12" for="selHDHouseType">Type :&nbsp;<span class="text-danger">*</span></label>
+                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                        <select class="form-control" id="selHDHouseType" name="selHDHouseType" placeholder="Select House/Commercial Place Type"></select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-lg-12 col-md-12 col-sm-12 col-xs-12" for="txtHDAdvance">Advance Amount :&nbsp;<span class="text-danger">*</span></label>
+                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                        <input type="text" class="form-control" name="txtHDAdvance" id="txtHDAdvance" placeholder="Enter Advance Amount" autocomplete="off"/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-lg-12 col-md-12 col-sm-12 col-xs-12" for="txtHDRentAmount">Rent Amount/Month :&nbsp;<span class="text-danger">*</span></label>
+                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                        <input type="text" class="form-control" name="txtHDRentAmount" id="txtHDRentAmount" placeholder="Enter Rent Amount/Month" autocomplete="off"/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-lg-12 col-md-12 col-sm-12 col-xs-12" for="txtHDAvailableFromDate">Available From Date :&nbsp;<span class="text-danger">*</span></label>
+                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                        <input type="text" class="form-control" name="txtHDAvailableFromDate" id="txtHDAvailableFromDate" placeholder="Enter Available From Date" autocomplete="off"/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-lg-12 col-md-12 col-sm-12 col-xs-12" for="txtHDContactNo">Contact Number :&nbsp;<span class="text-danger">*</span></label>
+                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                        <input type="text" class="form-control" name="txtHDContactNo" id="txtHDContactNo" placeholder="Enter Contact No." autocomplete="off"/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-lg-12 col-md-12 col-sm-12 col-xs-12" for="txtHDDetailedAddress">Detailed Address :&nbsp;<span class="text-danger">*</span></label>
+                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                        <textarea type="text" class="form-control" name="txtHDDetailedAddress" id="txtHDDetailedAddress" placeholder="Enter Detailed Address" autocomplete="off" rows="3"></textarea>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-lg-4 col-md-4 col-sm-4 col-xs-4 control-label" for="txtHDStatus">Status :&nbsp;<span class="text-danger">*</span></label>
                                     <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
-                                        <select class="form-control" id="selUserType" name="selUserType" placeholder="Select User Type">
-                                            <option value="USER">User</option>
-                                            <option value="EMPLOYEE">Employee</option>
-                                            <option value="ADMIN">Admin</option>
-                                        </select>
+                                        <input type="radio" value="1" id="txtHDActive" name="txtHDStatus"/><i class='fa fa-check' style='color:green; font-weight:bolder'></i>
+                                        &ensp;&ensp;&ensp;
+                                        <input type="radio" value="0" id="txtHDInactive" name="txtHDStatus"/><i class='fa fa-times' style='color:red; font-weight:bolder'></i>
                                     </div>
                                 </div>
                             </form>
                         </div>
                         <div class="modal-footer">
-                            <button class="btn btn-info btn-sm" id="btnUpdateUserDetails"><i class="fa fa-edit"></i>&nbsp;Save</button>
+                            <button class="btn btn-info btn-sm" id="btnSaveHD"><i class="fa fa-save"></i>&nbsp;Save</button>
                             <button class="btn btn-danger btn-sm" data-dismiss="modal"><i class="fa fa-close"></i>&nbsp;Close</button>
                         </div>
                     </div>
                 </div>
             </div>
-            <!-- Modal -->
 		</div>
     </div>
     @include('asset.js_links')
-    <script src="{{ URL::asset('js/admin/transition.js') }}"></script>
+    {{-- <script src="{{ URL::asset('js/admin/transition.js') }}"></script> --}}
     <script src="{{ URL::asset('js/user/common.js') }}"></script>
 </body>
 </html>
