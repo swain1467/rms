@@ -36,21 +36,26 @@ $(document).ready(function () {
         bInfo: true,
         bAutoWidth: false,
         bDestroy: true,
-        "sDom": "<'row'<'col-lg-5 col-md-5 col-sm-5 col-xs-5'><'col-lg-3 col-md-3 col-sm-3 col-xs-3' l><'col-lg-4 col-md-4 col-sm-4 col-xs-4' f>>" +
-            "<'row'<'col-lg-12 col-md-12 col-sm-12 col-xs-12'tr>>" +
-            "<'row'<'col-lg-9 col-md-9 col-sm-9 col-xs-9'i><'col-lg-3 col-md-3 col-sm-3 col-xs-3'p>>",
+        "sDom": "<'row'<'col-lg-5 col-md-5 col-sm-5'B><'col-lg-3 col-md-3 col-sm-3'l><'col-lg-4 col-md-4 col-sm-4'f>>" +
+            "<'row'<'col-lg-12 col-md-12 col-sm-12'tr>>" +
+            "<'row'<'col-lg-9 col-md-9 col-sm-9'i><'col-lg-3 col-md-3 col-sm-3'p>>",
         "aoColumns": [
             { "data": 'sl_no', "name": "sl_no", "sWidth": "10%", "className": "text-center" },
-            { "data": 'mail_address', "name": "mail_address", "sWidth": "15%" },
+            { "data": 'user.email', "name": "user.email", "sWidth": "15%" },
             { "data": 'contact_no', "name": "contact_no", "sWidth": "10%", "className": "text-center" },
-            { "data": 'available_from', "name": "available_from", "sWidth": "10%", "className": "text-center" },
-            { "data": 'hcp_name', "name": "hcp_name", "sWidth": "10%" },
-            { "data": 'area_name', "name": "area_name", "sWidth": "15%" },
-            { "data": 'city_name', "name": "city_name", "sWidth": "15%" },
+            { "data": 'from_date', "name": "from_date", "sWidth": "10%", "className": "text-center" },
+            { "data": 'type.type', "name": "type.type", "sWidth": "10%" },
+            { "data": 'area.area_name', "name": "area.area_name", "sWidth": "15%" },
+            { "data": 'city.city_name', "name": "city.city_name", "sWidth": "15%" },
             {
                 "data": null, "name": "action", "sWidth": "15%", "className": "text-center",
                 "defaultContent": `<button class='btn btn-warning btn-sm action-btn' onclick='UpdateHD(event)'><i class='fa fa-edit'></i></button>`
             }
+        ],
+        buttons: [{
+            text: `<button id="addCity" class="btn btn-success btn-sm"><i class="fa fa-plus"></i>&nbsp;Add</button>
+            &nbsp; <button id="addCity" class="btn btn-dark btn-sm"><i class="fa fa-upload"></i>&nbsp;Bulk Upload</button>`,
+        }
         ]
     });
 

@@ -19,7 +19,7 @@ class PostHistoryController extends Controller
         $output = array('status' => '', 'aaData[]' => array());
         
         $house_details = House::with('city:city_name,id','area:area_name,id','type:type,id')
-        ->select("id", "advance","city_id", "area_id", "type_id", "rent", "from_date", "contact_no", "detailed_address", "image")
+        ->select("id", "advance","city_id", "area_id", "type_id", "rent", "from_date", "contact_no", "detailed_address", "image", "status")
         ->where('created_by', session('id'))
         ->get();
         
@@ -94,7 +94,6 @@ class PostHistoryController extends Controller
             $house->detailed_address = $request['txtDetailedAddress'];
             $house->updated_by = session('id');
             $house->updated_at = date("Y-m-d H:i:s");
-            $house->status = 1;
             $house->save();
            
             $output['status'] = 'Success';
@@ -110,7 +109,7 @@ class PostHistoryController extends Controller
         $output = array('status' => '', 'aaData[]' => array());
         
         $house_details = House::with('city:city_name,id','area:area_name,id','type:type,id')
-        ->select("id", "advance","city_id", "area_id", "type_id", "rent", "from_date", "contact_no", "detailed_address")
+        ->select("id", "advance","city_id", "area_id", "type_id", "rent", "from_date", "contact_no", "detailed_address", "status")
         ->where('created_by', session('id'))
         ->onlyTrashed()
         ->get();

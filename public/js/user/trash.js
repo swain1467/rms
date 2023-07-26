@@ -10,12 +10,26 @@ $(document).ready(function () {
             {
                 "data": 'type.type', "name": "type.type", "sWidth": "70%",
                 mRender: function (data, type, val) {
-                    return `<button class='btn btn-danger btn-xs action-btn' onclick='DeleteHouse(event)'><i class='fa fa-trash'></i></button>
-                    &nbsp; ${val.type.type}
-                    <button class='pull-right btn btn-warning btn-xs action-btn' onclick='RestoreHouse(event)'><i class='fa fa-undo'></i></button>`;
+                    if(val.status){
+                        return `<button class='btn btn-danger btn-xs action-btn' onclick='DeleteHouse(event)'><i class='fa fa-trash'></i></button>
+                        &nbsp; ${val.type.type}
+                        <button class='pull-right btn btn-warning btn-xs action-btn' onclick='RestoreHouse(event)'><i class='fa fa-undo'></i></button>`;
+                    }else{
+                        return `<button class='btn btn-danger btn-xs action-btn' onclick='DeleteHouse(event)'><i class='fa fa-trash'></i></button>
+                        &nbsp; <b><span class="text-danger" title="This record has been black listed by the admin">${val.type.type}</span></b>
+                        <button class='pull-right btn btn-warning btn-xs action-btn' onclick='RestoreHouse(event)'><i class='fa fa-undo'></i></button>`;
+                    }
                 }
             },
-            { "data": 'from_date', "name": "from_date", "sWidth": "30%", "className":"text-center" }
+            { "data": 'from_date', "name": "from_date", "sWidth": "30%", "className":"text-center",
+                mRender: function (data, type, val) {
+                    if(val.status){
+                        return `${val.from_date}`;
+                    }else{
+                        return `<b><span class="text-danger" title="This record has been black listed by the admin">${val.from_date}</span></b>`;
+                    }
+                }
+            }
         ]
     });
 });

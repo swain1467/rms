@@ -21,6 +21,7 @@ class FindController extends Controller
         $house_details = House::with('user:name,id','city:city_name,id','area:area_name,id','type:type,id')
         ->select("id", "advance","city_id", "area_id", "type_id", "rent", "from_date", "contact_no", "detailed_address", "image","created_by")
         ->where('from_date','>', date("Y-m-d")) 
+        ->where('status', 1) 
         ->when($request->get('city'), function ($query, $city) {
             $query->where('city_id', $city);
         })
