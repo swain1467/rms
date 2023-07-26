@@ -44,6 +44,7 @@ class PostController extends Controller
         $area = Area::with('city:city_name,id')
         ->select("id", "area_name", "city_id")
         ->where('city_id', $request['city_id'])
+        ->where('status', 1)
         ->get();
                      
         $data = $area->toArray();

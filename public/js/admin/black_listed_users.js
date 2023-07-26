@@ -14,7 +14,7 @@ $(document).ready(function () {
         bProcessing: true,//server side pagination
         bServerSide: true,//server side pagination
         ajax: {
-            "url": "GetActiveUsersList",
+            "url": "GetBlackListUsersList",
             "type": "GET"
         },
         bStateSave: false,
@@ -46,8 +46,7 @@ $(document).ready(function () {
             },
             {
                 "data": null, "name": "action", "sWidth": "15%", "className": "text-center",
-                "defaultContent": `<button class='btn btn-success btn-sm action-btn' onclick='UpdateUserDetails(event)'><i class='fa fa-edit'></i></button>
-                &nbsp;<button class='btn btn-warning btn-sm action-btn' onclick='BlackListUser(event)'><i class='fa fa-ban'></i></button>
+                "defaultContent": `<button class='btn btn-success btn-sm action-btn' onclick='WhiteListUser(event)'><i class='fa fa-check'></i></button>
                 &nbsp;<button class='btn btn-danger btn-sm action-btn' onclick='DeleteUser(event)'><i class='fa fa-trash'></i></button>`
             }
         ]
@@ -67,7 +66,7 @@ $(document).ready(function () {
             url: "UpdateUserDetails",
             type: "POST",
             data: {
-                _token: _token, id: id, name: name, email: email, user_type: user_type
+                _token:_token, id: id, name: name, email: email, user_type: user_type
             },
             success: function (response) {
                 if (response.status == 'Success') {
@@ -92,33 +91,7 @@ $(document).ready(function () {
         });
     });
 });
-function UpdateUserDetails(event) {
-    var dtblUserList = $('#dtblUserList').dataTable();
-    $(dtblUserList.fnSettings().aoData).each(function () {
-        $(this.nTr).removeClass('success');
-    });
-    var row;
-    if (event.target.tagName == "BUTTON" || event.target.tagName == "A")
-        row = event.target.parentNode.parentNode;
-    else if (event.target.tagName == "I")
-        row = event.target.parentNode.parentNode.parentNode;
-
-    $("#modaUserDetailsHeader").html('Update User Details');
-    $("#btnUpdateUserDetails").html('<i class="fa fa-edit"></i>&nbsp;Update');
-    $("#btnUpdateUserDetails").removeAttr('disabled');
-
-    $("#txtUserId").val(dtblUserList.fnGetData(row)['id']);
-    $("#txtName").val(dtblUserList.fnGetData(row)['name']);
-    $("#txtEmail").val(dtblUserList.fnGetData(row)['email']);
-    $("#selUserType").val(dtblUserList.fnGetData(row)['user_type']);
-    if (dtblUserList.fnGetData(row)['status']) {
-        $("#txtActive").prop("checked", true);
-    } else {
-        $("#txtInactive").prop("checked", true);
-    }
-    $('#modaUserDetails').modal('show');
-}
-function BlackListUser(event) {
+function WhiteListUser(event) {
     var dtblUserList = $('#dtblUserList').dataTable();
     $(dtblUserList.fnSettings().aoData).each(function () {
         $(this.nTr).removeClass('success');
@@ -130,7 +103,7 @@ function BlackListUser(event) {
         row = event.target.parentNode.parentNode.parentNode;
     var id = dtblUserList.fnGetData(row)['id'];
     swal({
-        title: 'Are you sure to black list this user ?',
+        title: 'Are you sure to white list this user ?',
         text: "",
         type: 'warning',
         showCancelButton: true,
@@ -140,7 +113,7 @@ function BlackListUser(event) {
         animation: false
     }).then(function () {
         $.ajax({
-            url: "BlackListUser",
+            url: "WhiteListUser",
             type: "GET",
             data: { id: id },
             success: function (response) {

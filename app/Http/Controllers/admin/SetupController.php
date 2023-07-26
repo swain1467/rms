@@ -4,10 +4,186 @@ namespace App\Http\Controllers\admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\City;
+use App\Models\Area;
+use App\Models\Type;
 
 class SetupController extends Controller
 {
     public function SetupView(){
         return view("admin.setup");
+    }
+
+    public function GetCityList(Request $request){
+        $output = array('status' => '', 'aaData[]' => array());
+        
+        $total_city = City::select('id')
+                ->get();
+        $output['iTotalDisplayRecords'] = COUNT($total_city);
+        $search_keyword = $request['search']['value'];
+        $city = City::select('id', 'city_name', 'status')
+                ->Where('city_name', 'LIKE', '%'. $search_keyword .'%')
+                ->limit($request['length'])
+                ->offset($request['start'])
+                ->orderBy('city_name','ASC')
+                ->get();
+
+        $data = $city->toArray();
+        $slno = $request['start'] + 1; 
+        $output['iTotalRecords'] = COUNT($data);
+        foreach($data as $row){  
+            $row['sl_no'] = $slno;
+            $output['aaData'][] = $row;
+            $output['status'] = 'Success';
+            $slno++;
+        }
+        return $output;
+    }
+    public function SaveCity(Request $request){
+        $output = array('status' => '', 'message' => '');
+        
+        if(!$request['city_name']){
+            $output['status'] = 'Error';
+            $output['message'] = 'City/Town is required';
+            return $output;
+        }
+        
+        if($request['city_id'] == ''){
+            $city = new City;
+            $city->city_name = $request['city_name'];
+            $city->contact_person = session('id');
+            $city->status = $request['city_status'];
+            $city->contact_on = '7846993676';
+            $city->created_at = date("Y-m-d H:i:s");
+            $city->created_by = session('id');
+            $city->updated_at = date("Y-m-d H:i:s");
+            $city->updated_by = session('id');
+            $city->save();
+            $output['status'] = 'Success';
+            $output['message'] = 'City  added successfully';
+        }else{
+            $update = City::where("id", $request['city_id'])->
+            update(["city_name" => $request['city_name'], "status" => $request['city_status'],
+                    "updated_by" => session('id'), "updated_at" => date("Y-m-d H:i:s")]);
+            
+            if($update == 1){
+                $output['status'] = 'Success';
+                $output['message'] = 'City  updated successfully';
+            }else{
+                $output['status'] = 'Failure';
+                $output['message'] = 'Oops! Something went wrong';
+            }
+        }
+       return $output;
+    }
+
+    public function GetAreaList(Request $request){
+        $output = array('status' => '', 'aaData[]' => array());
+        
+        $area = Area::with('city:city_name,id')
+        ->select("id", "area_name", "status", "city_id")
+        ->where('city_id', $request['city_id'])
+        ->get();
+
+        $data = $area->toArray();
+        $slno = 1; 
+        foreach($data as $row){  
+            $row['sl_no'] = $slno;
+            $output['aaData'][] = $row;
+            $output['status'] = 'Success';
+            $slno++;
+        }
+        return $output;
+    }
+    
+    public function SaveArea(Request $request){
+        $output = array('status' => '', 'message' => '');
+        
+        if(!$request['area_name']){
+            $output['status'] = 'Error';
+            $output['message'] = 'Area is required';
+            return $output;
+        }
+        
+        if($request['area_id'] == ''){
+            $type = new Area;
+            $type->area_name = $request['area_name'];
+            $type->city_id = $request['city_id'];
+            $type->status = $request['area_status'];
+            $type->created_at = date("Y-m-d H:i:s");
+            $type->created_by = session('id');
+            $type->updated_at = date("Y-m-d H:i:s");
+            $type->updated_by = session('id');
+            $type->save();
+            $output['status'] = 'Success';
+            $output['message'] = 'Area  added successfully';
+        }else{
+            $update = Area::where("id", $request['area_id'])->
+            update(["area_name" => $request['area_name'], "status" => $request['area_status'],
+                    "updated_by" => session('id'), "updated_at" => date("Y-m-d H:i:s")]);
+            
+            if($update == 1){
+                $output['status'] = 'Success';
+                $output['message'] = 'Area  updated successfully';
+            }else{
+                $output['status'] = 'Failure';
+                $output['message'] = 'Oops! Something went wrong';
+            }
+        }
+       return $output;
+    }
+
+    public function GetHouseTypeList(){
+        $output = array('status' => '', 'aaData[]' => array());
+        
+        $type = Type::select('id', 'type', 'status')
+                ->orderBy('type','ASC')
+                ->get();
+
+        $data = $type->toArray();
+        $slno = 1; 
+        foreach($data as $row){  
+            $row['sl_no'] = $slno;
+            $output['aaData'][] = $row;
+            $output['status'] = 'Success';
+            $slno++;
+        }
+        return $output;
+    }
+
+    public function SaveHouseType(Request $request){
+        $output = array('status' => '', 'message' => '');
+        
+        if(!$request['type']){
+            $output['status'] = 'Error';
+            $output['message'] = 'House type is required';
+            return $output;
+        }
+        
+        if($request['id'] == ''){
+            $type = new Type;
+            $type->type = $request['type'];
+            $type->status = $request['type_status'];
+            $type->created_at = date("Y-m-d H:i:s");
+            $type->created_by = session('id');
+            $type->updated_at = date("Y-m-d H:i:s");
+            $type->updated_by = session('id');
+            $type->save();
+            $output['status'] = 'Success';
+            $output['message'] = 'Type  added successfully';
+        }else{
+            $update = Type::where("id", $request['id'])->
+            update(["type" => $request['type'], "status" => $request['type_status'],
+                    "updated_by" => session('id'), "updated_at" => date("Y-m-d H:i:s")]);
+            
+            if($update == 1){
+                $output['status'] = 'Success';
+                $output['message'] = 'Type  updated successfully';
+            }else{
+                $output['status'] = 'Failure';
+                $output['message'] = 'Oops! Something went wrong';
+            }
+        }
+       return $output;
     }
 }

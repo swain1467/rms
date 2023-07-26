@@ -77,9 +77,20 @@ Route::get('DeleteUser', 'App\Http\Controllers\admin\UserController@DeleteUser')
 
 Route::get('BlackListedUsers', 'App\Http\Controllers\admin\UserController@BlackListedUsersView')
 ->name('black_listed_users')->middleware('admin_guard');
+Route::get('GetBlackListUsersList', 'App\Http\Controllers\admin\UserController@GetBlackListUsersList')->middleware('admin_guard');
+Route::get('WhiteListUser', 'App\Http\Controllers\admin\UserController@WhiteListUser')->middleware('admin_guard');
 
 Route::get('Setup', 'App\Http\Controllers\admin\SetupController@SetupView')
 ->name('setup')->middleware('admin_guard');
+Route::get('GetCityList', 'App\Http\Controllers\admin\SetupController@GetCityList')->middleware('admin_guard');
+Route::post('SaveCity', 'App\Http\Controllers\admin\SetupController@SaveCity')->middleware('admin_guard');
+
+Route::get('GetAreaList', 'App\Http\Controllers\admin\SetupController@GetAreaList')->middleware('admin_guard');
+Route::post('SaveArea', 'App\Http\Controllers\admin\SetupController@SaveArea')->middleware('admin_guard');
+
+Route::get('GetHouseTypeList', 'App\Http\Controllers\admin\SetupController@GetHouseTypeList')->middleware('admin_guard');
+Route::post('SaveHouseType', 'App\Http\Controllers\admin\SetupController@SaveHouseType')->middleware('admin_guard');
 
 Route::get('Transition', 'App\Http\Controllers\admin\TransitionController@TransitionView')
 ->name('transition')->middleware('admin_guard');
+Route::get('GetHouseDetailsList', 'App\Http\Controllers\admin\TransitionController@GetHouseDetailsList')->middleware('admin_guard');

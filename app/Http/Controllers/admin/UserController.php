@@ -14,8 +14,7 @@ class UserController extends Controller
 
     public function GetActiveUsersList(Request $request){
         $output = array('status' => '', 'aaData[]' => array());
-        $data = [
-        ];
+        
         $total_user = User::select('id')
                 ->where('status', 1)
                 ->get();
@@ -109,4 +108,52 @@ class UserController extends Controller
        return $output;
     }
 //Black List Users All functions 
+    public function BlackListedUsersView(){
+        return view("admin.black_listed_users");
+    }
+    public function GetBlackListUsersList(Request $request){
+        $output = array('status' => '', 'aaData[]' => array());
+        
+        $total_user = User::select('id')
+                ->where('status', 0)
+                ->get();
+        $output['iTotalDisplayRecords'] = COUNT($total_user);
+        $search_keyword = $request['search']['value'];
+        $user = User::select('id', 'name', 'email', 'user_type', 'status')
+                ->where('status', '=', 0)
+                ->Where(function ($query) use ($search_keyword) {
+                    $query->orWhere('name', 'LIKE', '%'. $search_keyword .'%')
+                    ->orWhere('email', 'LIKE', '%'. $search_keyword .'%')
+                    ->orWhere('user_type', 'LIKE', '%'. $search_keyword .'%');
+                })->limit($request['length'])
+                ->offset($request['start'])
+                ->orderBy('name','ASC')
+                ->get();
+
+        $data = $user->toArray();
+        $slno = $request['start'] + 1; 
+        $output['iTotalRecords'] = COUNT($data);
+        foreach($data as $row){  
+            $row['sl_no'] = $slno;
+            $output['aaData'][] = $row;
+            $output['status'] = 'Success';
+            $slno++;
+        }
+        return $output;
+    }
+    public function WhiteListUser(Request $request){
+        $output = array('status' => '', 'message' => '');
+
+        $update = User::where("id", $request['id'])->
+        update(["status" => 1, "updated_at" => date("Y-m-d H:i:s")]);
+        
+        if($update == 1){
+            $output['status'] = 'Success';
+            $output['message'] = 'User black listed';
+        }else{
+            $output['status'] = 'Failure';
+            $output['message'] = 'Oops! Something went wrong';
+        }
+       return $output;
+    }
 }
