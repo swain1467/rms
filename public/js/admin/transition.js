@@ -65,13 +65,12 @@ $(document).ready(function () {
                 &nbsp; <button class='btn btn-danger btn-sm action-btn' onclick='DeleteHD(event)'><i class='fa fa-trash'></i></button>`
             }
         ],
-        buttons: [
-            {
-                text: `<button id="addCity" class="btn btn-dark btn-sm"><i class="fa fa-upload"></i>&nbsp;Bulk Upload</button>`,
-            }
-        ]
+        // buttons: [
+        //     {
+        //         text: `<button id="openExcelModal" class="btn btn-dark btn-sm"><i class="fa fa-upload"></i>&nbsp;Bulk Upload</button>`,
+        //     }
+        // ]
     });
-
     $("#btnSaveHD").click(function () {
         $("#btnSaveHD").html('<i class="fa fa-gear fa-spin"></i>&nbsp;Updating...');
         $("#btnSaveHD").attr('disabled', true);
@@ -118,6 +117,26 @@ $(document).ready(function () {
                 toastr.error('Sorry! Something Went Wrong!!!');
             }
         });
+    });
+    // Excel Upload starts here
+    $("#openExcelModal").click(function () {
+		$('#fileUpload').val('');
+		$('#DivHideShow').hide();
+        $('#ModalExcelUpload').modal('show');
+    });
+    // Template Download
+    $("#btnExcelDownload").click(function () {
+		window.location.href = "ExcelTemplateDownload";
+    });
+    // Excel Preview
+    $("#btnExcelPreview").click(function () {
+		var excel_file = $("#fileUpload").val();
+        if (excel_file == "") {
+            $("#fileUpload").focus();
+            toastr.warning("Sorry! Please choose downloaded excel file.");
+        }else{
+
+        }
     });
 });
 function LoadCitySelectize() {

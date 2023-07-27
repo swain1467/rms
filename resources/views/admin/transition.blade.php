@@ -30,7 +30,7 @@
                     <tbody></tbody>
                 </table>
 			</div>
-            
+            {{-- Edit Modal --}}
             <div id="modalHD" class="modal fade" role="dialog">
                 <div class="modal-dialog">
                     <div class="modal-content">
@@ -112,10 +112,61 @@
                     </div>
                 </div>
             </div>
+            {{-- Excel Modal --}}
+            <div id="ModalExcelUpload" class="modal fade" role="dialog">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <div class="col-lg-11 col-md-11 col-sm-11 col-xs-11">
+                                <h5 class="modal-title" id="modalHDHeader">Browse Excel To Upload Data</h5>
+                            </div>
+                            <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1">
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            </div>
+                        </div>
+                        <div class="modal-body">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                        <form method="post" action="" class="form-horizontal" id="excel" name="excel" enctype="multipart/form-data">
+                                            <input type="hidden" name="_token" id="_token" value="{{ csrf_token() }}" />
+                                            <fieldset class="fieldset-bordered">
+                                                Step 1. Download: <button type="button" class="btn btn-info btn-xs" id="btnExcelDownload"><i class="fa fa-download"></i> Template</button><br>
+                                                Step 2. Fill the data in the downloaded excel file.<br>
+                                                Step 3. Browse and upload.
+                                                <div class="form-group">
+                                                    <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                                                        <input type="file" id="fileUpload" name="fileUpload" class="form-control" onchange="checkfile(this);" required="" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"/>
+                                                    </div>
+                                                    <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                                                        <button type="button" id="btnExcelPreview" class="btn btn-primary"><i class="fa fa-eye"></i>&nbsp;&nbsp;Preview</button>
+                                                    </div>
+                                                </div>
+                                            </fieldset>
+                                        </form>
+                                    </div>
+                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                        <fieldset class="fieldset-bordered" id="DivHideShow">
+                                            <b><h3>Data to Upload</h3></b>
+                                            <div class="col-lg-12 col-sm-12 col-md-12">
+                                                <form method="post" class="form-horizontal" id="excelExportForm" enctype="multipart/form-data">
+                                                </form>
+                                            </div>
+                                            <input type="hidden" id="csrf_token" value="{{ csrf_token() }}" />
+                                        </fieldset>
+                                    </div>
+                                </div>
+                            </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-danger btn-sm" data-dismiss="modal"><i class="fa fa-close"></i>&nbsp;Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
 		</div>
     </div>
     @include('asset.js_links')
-    {{-- <script src="{{ URL::asset('js/admin/transition.js') }}"></script> --}}
+    <script src="{{ URL::asset('js/admin/transition.js') }}"></script>
     <script src="{{ URL::asset('js/user/common.js') }}"></script>
 </body>
 </html>

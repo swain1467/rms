@@ -5,9 +5,7 @@
         <span class="btn-xs btn btn-warning" style="font-size: 16px; border-radius: 15%;">
             <b>Hi {{session('name')}} <i class="fa fa-user fa-lg"></i></b>
         </span>
-        <a href="{{route('sign_out')}}">
-            <button class="action-btn btn btn-warning btn-md pull-right"><i  class="fa fa-power-off"></i></button>
-        </a>
+        <button onclick="signOut()" class="action-btn btn btn-warning btn-md pull-right"><i  class="fa fa-power-off"></i></button>
     </div>
 </div>
 <br>

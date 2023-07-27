@@ -8,3 +8,10 @@ function openNav() {
         x.style.width = "100%";
     }
 }
+
+function signOut(){
+    let text = 'Are you sure? want to logout.'
+    if (confirm(text) == true) {
+        window.location.href = "SignOut";
+    }
+}

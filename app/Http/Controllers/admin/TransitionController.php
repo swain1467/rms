@@ -4,6 +4,9 @@ namespace App\Http\Controllers\admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Exports\HouseExcelTemplate;
+use Excel;
+
 use App\Models\City;
 use App\Models\Area;
 use App\Models\Type;
@@ -121,5 +124,9 @@ class TransitionController extends Controller
             $output['message'] = 'Sorry something went wrong';
         }
        return $output;
+    }
+
+    public function ExcelTemplateDownload(Request $request){
+        return Excel::download(new HouseExcelTemplate, 'HouseDetailsTemplate.xlsx');
     }
 }

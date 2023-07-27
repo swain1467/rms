@@ -17,7 +17,7 @@
                     <ul class="nav nav-tabs bg-dark">
 					<li class="active"><a href="#tabCity" data-toggle="tab">City/Town</a></li>
 					<li><a href="#tabArea" data-toggle="tab">Area</a></li>
-					{{-- <li><a href="#tabHouseType" data-toggle="tab">House Type</a></li> --}}
+					<li><a href="#tabHouseType" data-toggle="tab">House Type</a></li>
                     </ul>
                 </b>
             </div>
