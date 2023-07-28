@@ -65,11 +65,11 @@ $(document).ready(function () {
                 &nbsp; <button class='btn btn-danger btn-sm action-btn' onclick='DeleteHD(event)'><i class='fa fa-trash'></i></button>`
             }
         ],
-        // buttons: [
-        //     {
-        //         text: `<button id="openExcelModal" class="btn btn-dark btn-sm"><i class="fa fa-upload"></i>&nbsp;Bulk Upload</button>`,
-        //     }
-        // ]
+        buttons: [
+            {
+                text: `<button id="openExcelModal" class="btn btn-dark btn-sm"><i class="fa fa-upload"></i>&nbsp;Bulk Upload</button>`,
+            }
+        ]
     });
     $("#btnSaveHD").click(function () {
         $("#btnSaveHD").html('<i class="fa fa-gear fa-spin"></i>&nbsp;Updating...');
@@ -128,6 +128,10 @@ $(document).ready(function () {
     $("#btnExcelDownload").click(function () {
 		window.location.href = "ExcelTemplateDownload";
     });
+    // Reference Download
+    $("#btnReferenceDownload").click(function () {
+		window.location.href = "ExcelReferenceDownload";
+    });
     // Excel Preview
     $("#btnExcelPreview").click(function () {
 		var excel_file = $("#fileUpload").val();
@@ -135,7 +139,28 @@ $(document).ready(function () {
             $("#fileUpload").focus();
             toastr.warning("Sorry! Please choose downloaded excel file.");
         }else{
-
+            var formData = new FormData();
+            formData.append("_token", $("#csrf_token").val());
+            formData.append("fileUpload", $("#fileUpload")[0].files[0]);
+            $.ajax({
+                url: "ExcelPreview",
+                type: "post",
+                data: formData,
+                contentType: false, // NEEDED, DON'T OMIT THIS (requires jQuery 1.6+)
+                processData: false, // NEEDED, DON'T OMIT THIS
+                success: function (response) {
+                    if (response.status == "Success") {
+                        dtblHD.ajax.reload();
+                        toastr.success(response.message);
+                        $('#ModalExcelUpload').modal('hide');
+                    } else if (response.status == "Failure") {
+                        toastr.error(response.message);;
+                        $("#fileUpload").val("");
+                        // $("#DivHideShow").hide();
+                    }
+                },
+                error: function (responsedata) {},
+            });
         }
     });
 });
@@ -276,4 +301,16 @@ function DeleteHD(event) {
             }
         });
     }, function (dismiss) { }).done();
+}
+// Excel File
+function checkfile(sender) {
+    var validExts = new Array(".xlsx", ".xls");/*, ".csv"*/
+    var fileExt = sender.value;
+    fileExt = fileExt.substring(fileExt.lastIndexOf('.'));
+    if (validExts.indexOf(fileExt) < 0) {
+      	toastr.error("Invalid file selected, valid files are of " + validExts.toString() + " types.");
+      	sender.value = '';
+      	return false;
+    }
+    else return true;
 }

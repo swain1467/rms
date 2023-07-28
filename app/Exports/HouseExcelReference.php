@@ -3,8 +3,9 @@
 namespace App\Exports;
 
 use Illuminate\Contracts\Support\Responsable;
+
 use Maatwebsite\Excel\Concerns\Exportable;
-use Maatwebsite\Excel\Concerns\FromCollection; //For small data
+use Maatwebsite\Excel\Concerns\FromCollection; //For larage data execute in chunks
 use Maatwebsite\Excel\Concerns\FromArray;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithMapping;
@@ -15,51 +16,45 @@ use Maatwebsite\Excel\Events\BeforeExport;
 use Maatwebsite\Excel\Events\BeforeWriting;
 use Maatwebsite\Excel\Events\BeforeSheet;
 use Maatwebsite\Excel\Events\AfterSheet;
-// Multisheet
-// use Maatwebsite\Excel\Concerns\WithMultipleSheets;
-// Models
-use App\Models\House;
 
-class HouseExcelTemplate implements 
-// FromCollection, 
+use App\Models\Area;
+use App\Models\Type;
+
+class HouseExcelReference implements 
+FromCollection,
 Responsable, 
-ShouldAutoSize, 
-// WithMapping, 
-WithHeadings, 
+ShouldAutoSize,
+WithHeadings,
 WithEvents
 {
     use Exportable;
-    private $fileName = "HouseDetailsTemplate.xlsx";
-    /**
-    * @return \Illuminate\Support\Collection
-    */
-    // public function collection()
-    // {
-    //     $house = House::with('user:email,id','city:city_name,id','area:area_name,id','type:type,id')
-    //     ->select("id", "advance","city_id", "area_id", "type_id", "rent", "from_date", "contact_no", "detailed_address", "image", "status", "created_by")
-    //     ->where('from_date','>', date("Y-m-d")) 
-    //     ->get(); 
-    //     return $house;
-    // }
+    private $fileName = "HouseDetReference.xlsx";
+    private $collection;
+    public function __construct($arrays)
+    {
+        $this->collection = collect($arrays);
+    }
 
-    // public function map($house): array
-    // {
-    //     return[
-    //         $house->area->area_name,
-    //         $house->city->city_name,
-    //         $house->type->type,
-    //         $house->from_date,
-    //         $house->contact_no,
-    //         $house->advance,
-    //         $house->rent,
-    //         $house->detailed_address
-    //     ];
-    // }
+    public function collection()
+    {
+        // $test=[
+        //     ['area'=>'Prashanti Vihar', 'city'=>'bbsr', 'type'=>'1 BHK'],
+        //     ['area'=>'Prashanti Vihar', 'city'=>'bbsr', 'type'=>'1 BHK'],
+        //     ['area'=>'Prashanti Vihar', 'city'=>'bbsr', 'type'=>'1 BHK'],
+        //     ['area'=>'', 'city'=>'', 'type'=>'1 BHK']
+        // ];
+        // echo'<pre>'; print_r($test);
+        // $test1 = collect($test);
+        // return $test1;
+
+        return $this->collection;
+        
+    }
     
     public function headings(): array
     {
         return[
-            'Area', 'City', 'Type', 'Available From', 'Contact No', 'Advance', 'Rent', 'Address'
+            'Area', 'City','Type'
         ];
     }
 
@@ -68,7 +63,7 @@ WithEvents
         return
         [
             AfterSheet::class => function(AfterSheet $event){
-                $event->sheet->getStyle('A1:H1')->applyFromArray([
+                $event->sheet->getStyle('A1:C1')->applyFromArray([
                     'font' => [
                         'bold' => true
                     ],

@@ -131,15 +131,18 @@
                                         <form method="post" action="" class="form-horizontal" id="excel" name="excel" enctype="multipart/form-data">
                                             <input type="hidden" name="_token" id="_token" value="{{ csrf_token() }}" />
                                             <fieldset class="fieldset-bordered">
-                                                Step 1. Download: <button type="button" class="btn btn-info btn-xs" id="btnExcelDownload"><i class="fa fa-download"></i> Template</button><br>
-                                                Step 2. Fill the data in the downloaded excel file.<br>
-                                                Step 3. Browse and upload.
+                                                Step 1. Download: <button type="button" class="btn btn-info btn-xs" id="btnExcelDownload"><i class="fa fa-download"></i> Template</button>
+                                                and <button type="button" class="btn btn-success btn-xs" id="btnReferenceDownload"><i class="fa fa-download"></i> Reference</button> excel.<br>
+                                                Step 2. Fill the data in the downloaded excel <b>Template</b> file.<br>
+                                                Step 3. For column <b>Area</b>, <b>City</b> and <b>Type</b> please refer the downloaded <b>Reference</b> file,<br>
+                                                Step 4. For column <b>Available From</b> follow the date format as <b>"DD-MM-YYYY"</b>.<br>
+                                                Step 5. Browse and upload.
                                                 <div class="form-group">
                                                     <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
                                                         <input type="file" id="fileUpload" name="fileUpload" class="form-control" onchange="checkfile(this);" required="" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"/>
                                                     </div>
                                                     <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
-                                                        <button type="button" id="btnExcelPreview" class="btn btn-primary"><i class="fa fa-eye"></i>&nbsp;&nbsp;Preview</button>
+                                                        <button type="button" id="btnExcelPreview" class="btn btn-warning"><i class="fa fa-upload"></i>&nbsp;&nbsp;Upload</button>
                                                     </div>
                                                 </div>
                                             </fieldset>

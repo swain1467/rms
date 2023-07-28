@@ -5,6 +5,8 @@ namespace App\Http\Controllers\admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Exports\HouseExcelTemplate;
+use App\Exports\HouseExcelReference;
+use App\Imports\HouseDetailsImport;
 use Excel;
 
 use App\Models\City;
@@ -127,6 +129,80 @@ class TransitionController extends Controller
     }
 
     public function ExcelTemplateDownload(Request $request){
-        return Excel::download(new HouseExcelTemplate, 'HouseDetailsTemplate.xlsx');
+        // return Excel::download(new HouseExcelTemplate, 'HouseDetailsTemplate.xlsx');
+        return new HouseExcelTemplate;
+    }
+
+    public function ExcelReferenceDownload(Request $request){
+        $area = Area::with('city:city_name,id')
+        ->select("id", "area_name", "city_id")
+        ->where('status', 1)
+        ->orderBy('area_name', 'ASC')
+        ->get()->toArray();
+
+        foreach($area as $a){  
+            $areas[]['area'] = $a['area_name'];
+            $cities[]['city'] = $a['city']['city_name'];
+        }
+
+        $type = Type::select('id', 'type', 'status')
+                ->orderBy('type','ASC')
+                ->get()->toArray();
+        foreach($type as $t){  
+            $types[]['type'] = $t['type'];
+        }
+        
+    
+        $ac = array();
+        foreach ($cities as $key => $value){
+            $ac[] = (object)array_merge((array)$areas[$key], (array)$value);
+        }
+
+
+        if(count($ac) >= count($types)){
+            $arr1 = $ac;
+            $arr2 = $types;
+            $acg = 1;
+        }else{
+            $arr1 = $types;
+            $arr2 = $ac;
+            $acg = 0;
+        }
+        
+        $arrays = array();
+        foreach ($arr1 as $key => $value){
+            if(isset($arr2[$key])){
+                if($acg){
+                    $arrays[] = array_merge((array)$value, (array)$arr2[$key]);
+                }else{
+                    $arrays[] = array_merge((array)$arr2[$key], (array)$value);
+                }
+            }
+            else{
+                if($acg){
+                    $arrays[] = array_merge((array)$value,['type'=>'']);
+                }else{
+                    $arrays[] = array_merge(['area'=>'','city'=>''],(array)$value);
+                }
+            }
+        }
+        return new HouseExcelReference($arrays);
+    }
+
+    public function ExcelPreview(Request $request)
+    {
+        $output = array();
+
+        $formdata = $request->input();
+        if ($request->hasFile('fileUpload')) {
+            $file = $request->file('fileUpload');
+            (new HouseDetailsImport)->import($file)->store('import');
+            $output['status'] = 'Success';
+            $output['message'] = 'Excel uploaded successfully.';
+        } else {
+            $output['status'] = 'Failure';
+            $output['message'] = 'Excel file not found.';
+        }
+        return $output;
     }
 }

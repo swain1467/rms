@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class House extends Model
 {
+    protected $fillable = ['area_id'];
+
     use HasFactory;
     use softDeletes;
     public function area(){

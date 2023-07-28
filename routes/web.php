@@ -98,3 +98,5 @@ Route::post('UpdateHouseDetails', 'App\Http\Controllers\admin\TransitionControll
 Route::get('DeleteHD', 'App\Http\Controllers\admin\TransitionController@DeleteHD')->middleware('admin_guard');
 // Excel Upload
 Route::get('ExcelTemplateDownload', 'App\Http\Controllers\admin\TransitionController@ExcelTemplateDownload')->middleware('admin_guard');
+Route::get('ExcelReferenceDownload', 'App\Http\Controllers\admin\TransitionController@ExcelReferenceDownload');
+Route::post('ExcelPreview', 'App\Http\Controllers\admin\TransitionController@ExcelPreview');
