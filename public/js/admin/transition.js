@@ -154,9 +154,11 @@ $(document).ready(function () {
                         toastr.success(response.message);
                         $('#ModalExcelUpload').modal('hide');
                     } else if (response.status == "Failure") {
-                        toastr.error(response.message);;
+                        toastr.error(response.message);
                         $("#fileUpload").val("");
                         // $("#DivHideShow").hide();
+                    } else{
+                        toastr.error('Invalid data in excel');
                     }
                 },
                 error: function (responsedata) {},

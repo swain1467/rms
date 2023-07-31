@@ -193,10 +193,25 @@ class TransitionController extends Controller
     {
         $output = array();
 
+        $city = City::select('id','city_name')
+        ->where('status', 1)
+        ->get()->toArray();
+
+        foreach($city as $c){  
+            $cities[$c['id']] = $c['city_name'];
+        }
+
+        $type = Type::select('id', 'type', 'status')
+                ->orderBy('type','ASC')
+                ->get()->toArray();
+        foreach($type as $t){  
+            $types[$t['id']] = $t['type'];
+        }
+
         $formdata = $request->input();
         if ($request->hasFile('fileUpload')) {
             $file = $request->file('fileUpload');
-            (new HouseDetailsImport)->import($file)->store('import');
+            (new HouseDetailsImport($cities, $types))->import($file);
             $output['status'] = 'Success';
             $output['message'] = 'Excel uploaded successfully.';
         } else {
