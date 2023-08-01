@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers\user;
 
+use Illuminate\Support\Facades\Http;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Mail\MailNotify;
 use Mail;
+
+use Illuminate\Support\Facades\Cache;
 
 class RetrievePasswordController extends Controller
 {
@@ -44,6 +47,7 @@ class RetrievePasswordController extends Controller
                 'title' => 'Please enter this below OTP for verification',
                 'body' => $otp
             ];
+
             Mail::to($request['email'])->send(new MailNotify($mailData));
 
             $output['status'] = 'Success';
@@ -88,5 +92,9 @@ class RetrievePasswordController extends Controller
             $output['message'] = 'Invalid OTP';
         }
        return $output;
+    }
+
+    public function MockDemo(){
+        $value = Cache::get('key');
     }
 }

@@ -1,7 +1,9 @@
 <?php
 
 namespace Tests\Feature;
-
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\WithoutMiddleware;
+use Illuminate\Support\Facades\Cache;
 // use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -15,5 +17,16 @@ class ExampleTest extends TestCase
         $response = $this->get('/');
 
         $response->assertStatus(200);
+    }
+
+    public function testGetMockDemo()
+    {
+        Cache::shouldReceive('get')
+                    ->atLeast()
+                    ->times(1)
+                    ->andReturn('value');
+ 
+        // $response = $this->get('/users');
+ 
     }
 }

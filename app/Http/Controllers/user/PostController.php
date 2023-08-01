@@ -10,6 +10,8 @@ use App\Models\Area;
 use App\Models\Type;
 use App\Models\House;
 
+use App\Service\PostService;
+
 class PostController extends Controller
 {
     
@@ -69,60 +71,10 @@ class PostController extends Controller
         }
         return $output;
     }
-
     public function SavePost(Request $request){
-        $request->validate(
-            [
-                "selCity" => "required",
-                "selArea" => "required",
-                "selHouseType" => "required",
-                "txtAdvance" => "required|integer",
-                "txtRentAmount" => "required|integer",
-                "txtAvailableFromDate" => "required",
-                "txtContactNo" => "required|digits_between:10,10",
-                "txtDetailedAddress" => "required",
-                "filImage" => "required"
-            ],
-            [
-                'selCity.required' => 'City is required',
-                'selArea.required' => 'Area is required',
-                'selHouseType.required' => 'Type is required',
-                'txtAdvance.required' => 'Advance required',
-                'txtRentAmount.required' => 'Rent is required',
-                'txtAvailableFromDate.required' => 'Available From is required',
-                'txtContactNo.required' => 'Contact no. is required',
-                'txtDetailedAddress.required' => 'Address is required',
-                'filImage.required' => 'Image is required',
-
-                'txtAdvance.integer' => 'Advance must be a number',
-                'txtRentAmount.integer' => 'Rent must be a number',
-                'txtContactNo.digits_between' => 'Contact no shoud be 10 digits'
-            ]
-        );
-
-        $file = $request->file('filImage')->store('postimage');
-        $fileName = $request['selCity'].$request['selArea'].$request['selHouseType']
-                    .date("dmyHis").'.'.$request['filImage']->extension();
-        
-        $path = $request->filImage->storeAs('postimage', $fileName);
-
-        $house = new House;
-            $house->city_id = $request['selCity'];
-            $house->area_id = $request['selArea'];
-            $house->type_id = $request['selHouseType'];
-            $house->advance = $request['txtAdvance'];
-            $house->rent = $request['txtRentAmount'];
-            $house->from_date = $request['txtAvailableFromDate'];
-            $house->contact_no = $request['txtContactNo'];
-            $house->detailed_address = $request['txtDetailedAddress'];
-            $house->created_by = session('id');
-            $house->updated_by = session('id');
-            $house->created_at = date("Y-m-d H:i:s");
-            $house->updated_at = date("Y-m-d H:i:s");
-            $house->image = $path;
-            $house->status = 1;
-            $house->save();
-            
+        PostService::validateData($request);
+        $path = PostService::saveImage($request);
+        PostService::saveData($request, $path);
         return redirect(route('post_history'));
     }
 }

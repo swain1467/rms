@@ -100,3 +100,6 @@ Route::get('DeleteHD', 'App\Http\Controllers\admin\TransitionController@DeleteHD
 Route::get('ExcelTemplateDownload', 'App\Http\Controllers\admin\TransitionController@ExcelTemplateDownload')->middleware('admin_guard');
 Route::get('ExcelReferenceDownload', 'App\Http\Controllers\admin\TransitionController@ExcelReferenceDownload');
 Route::post('ExcelPreview', 'App\Http\Controllers\admin\TransitionController@ExcelPreview');
+
+Route::get('MockDemo', 'App\Http\Controllers\user\RetrievePasswordController@MockDemo');
+
