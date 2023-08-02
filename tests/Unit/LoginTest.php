@@ -12,7 +12,7 @@ class LoginTest extends TestCase
      */
     public function test_login_view(): void
     {
-        $response = $this->get('SignIn');
+        $response = $this->get(uri: '/SignIn');
         $response->assertStatus(200);
     }
 

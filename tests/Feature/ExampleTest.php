@@ -18,15 +18,4 @@ class ExampleTest extends TestCase
 
         $response->assertStatus(200);
     }
-
-    public function testGetMockDemo()
-    {
-        Cache::shouldReceive('get')
-                    ->atLeast()
-                    ->times(1)
-                    ->andReturn('value');
- 
-        // $response = $this->get('/users');
- 
-    }
 }

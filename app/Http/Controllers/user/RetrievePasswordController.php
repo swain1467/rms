@@ -93,8 +93,4 @@ class RetrievePasswordController extends Controller
         }
        return $output;
     }
-
-    public function MockDemo(){
-        $value = Cache::get('key');
-    }
 }
