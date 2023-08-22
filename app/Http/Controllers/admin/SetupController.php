@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Http\Controllers\admin;
-
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\City;
@@ -10,6 +9,11 @@ use App\Models\Type;
 
 class SetupController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth:api');
+    }
+
     public function SetupView(){
         return view("admin.setup");
     }
@@ -133,20 +137,25 @@ class SetupController extends Controller
        return $output;
     }
 
-    public function GetHouseTypeList(){
+    public function GetHouseTypeList(Request $request){
         $output = array('status' => '', 'aaData[]' => array());
         
-        $type = Type::select('id', 'type', 'status')
+        if(auth()->check() == 1){
+            $type = Type::select('id', 'type', 'status')
                 ->orderBy('type','ASC')
                 ->get();
 
-        $data = $type->toArray();
-        $slno = 1; 
-        foreach($data as $row){  
-            $row['sl_no'] = $slno;
-            $output['aaData'][] = $row;
-            $output['status'] = 'Success';
-            $slno++;
+            $data = $type->toArray();
+            $slno = 1; 
+            foreach($data as $row){  
+                $row['sl_no'] = $slno;
+                $output['aaData'][] = $row;
+                $output['status'] = 'Success';
+                $slno++;
+            }
+        }else{
+            $output['status'] = 'Error';
+            $output['message'] = 'Invalid Access Please log in';
         }
         return $output;
     }

@@ -1,13 +1,18 @@
 <?php
 
 namespace App\Http\Controllers\user;
-
+use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
 
 class SignInController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth:api', ['except' => ['LogIn']]);
+    }
+
     public function SignInView(){
         return view("user.signin");
     }
@@ -52,5 +57,50 @@ class SignInController extends Controller
         } else{
             echo'Invalid password.';
         }
+    }
+    //API--------------------------
+    public function LogIn(Request $request){
+        $output = array('status' => '', 'message' => '', 'token' => '');
+        $credentials = request(['email', 'password']);
+        
+        if (! $token = auth()->attempt($credentials)) {
+            $output['status'] = 'Error';
+            $output['message'] = 'Invalid Credentials';
+        }else{
+            $output['status'] = 'Success';
+            $output['message'] = 'You have successfull Signed In.';
+            $output['token'] = $this->respondWithToken($token);
+        }
+        return $output;
+    }
+    public function logout()
+    {
+        auth()->logout();
+        $output['status'] = 'Success';
+        $output['message'] = 'Successfully Signed Out.';
+        $output['token'] = '';
+        return $output;
+    }
+    public function me()
+    {
+        return auth()->check();
+    }
+
+    public function refresh()
+    {
+        return $this->respondWithToken(auth()->refresh());
+    }
+
+    protected function respondWithToken($token)
+    {
+        return response()->json([
+            'access_token' => $token,
+            'token_type' => 'bearer',
+            'expires_in' => auth()->factory()->getTTL() * 60,
+            'user_email' => auth()->user()->email,
+            'user_type' => auth()->user()->user_type,
+            'user_id' => auth()->user()->id,
+            'user_name' => auth()->user()->name
+        ]);
     }
 }
