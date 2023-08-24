@@ -10,7 +10,7 @@ class SignInController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth:api', ['except' => ['LogIn']]);
+        // $this->middleware('auth:api', ['except' => ['LogIn']]);
     }
 
     public function SignInView(){

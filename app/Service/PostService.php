@@ -64,4 +64,65 @@ class PostService{
             $house->status = 1;
             $house->save();
     }
+    public static function validateAPIData(Request $request){
+        $output = array('status' => '', 'message' => '');
+        if(!$request['selCity']){
+            $output['status'] = 'Error';
+            $output['message'] = 'City is required';
+            return $output; 
+        }
+        if(!$request['selArea']){
+            $output['status'] = 'Error';
+            $output['message'] = 'Area required';
+            return $output;
+        }
+        if(!$request['selHouseType']){
+            $output['status'] = 'Error';
+            $output['message'] = 'Property type required';
+            return $output;
+        }
+        if(!$request['txtRentAmount']){
+            $output['status'] = 'Error';
+            $output['message'] = 'Rent required';
+            return $output;
+        }
+        if(!$request['txtAdvance']){
+            $output['status'] = 'Error';
+            $output['message'] = 'Advance required';
+            return $output;
+        }
+        if(!$request['txtAvailableFromDate']){
+            $output['status'] = 'Error';
+            $output['message'] = 'Available from required';
+            return $output;
+        }
+        if(!$request['txtContactNo']){
+            $output['status'] = 'Error';
+            $output['message'] = 'Contact no required';
+            return $output;
+        }
+        if(!$request['txtDetailedAddress']){
+            $output['status'] = 'Error';
+            $output['message'] = 'Address required';
+            return $output;
+        }
+    }
+    public static function saveAPIData(Request $request){
+        $house = new House;
+            $house->city_id = $request['selCity'];
+            $house->area_id = $request['selArea'];
+            $house->type_id = $request['selHouseType'];
+            $house->advance = $request['txtAdvance'];
+            $house->rent = $request['txtRentAmount'];
+            $house->from_date = $request['txtAvailableFromDate'];
+            $house->contact_no = $request['txtContactNo'];
+            $house->detailed_address = $request['txtDetailedAddress'];
+            $house->created_by = $request['user_id'];
+            $house->updated_by = $request['user_id'];
+            $house->created_at = date("Y-m-d H:i:s");
+            $house->updated_at = date("Y-m-d H:i:s");
+            $house->image = 'Vue API Image';
+            $house->status = 1;
+            $house->save();
+    }
 }

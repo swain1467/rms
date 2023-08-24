@@ -34,4 +34,16 @@ Route::group([
     Route::get('GetHouseTypeList', 'App\Http\Controllers\admin\SetupController@GetHouseTypeList')->middleware('cors');
     Route::post('Refresh', 'App\Http\Controllers\user\SignInController@refresh')->middleware('cors');
     Route::get('Me', 'App\Http\Controllers\user\SignInController@me');
+
+    Route::get('GetCity', 'App\Http\Controllers\user\PostController@GetAPICity');
+    Route::post('GetArea', 'App\Http\Controllers\user\PostController@GetAPIArea');
+    Route::get('GetType', 'App\Http\Controllers\user\PostController@GetAPIType');
+    Route::post('SavePostProperty', 'App\Http\Controllers\user\PostController@SavePostProperty');
+
+    Route::post('GetAvailableHouseList', 'App\Http\Controllers\user\FindController@GetAPIAvailableHouseList');
+
+    Route::post('GetHouseList', 'App\Http\Controllers\user\PostHistoryController@GetAPIHouseList');
+    Route::post('GetHouseData', 'App\Http\Controllers\user\PostHistoryController@GetAPIHouseData');
+    Route::post('UpdateHouse', 'App\Http\Controllers\user\PostHistoryController@UpdateAPIHouse');
+    Route::post('DeleteHouse', 'App\Http\Controllers\user\PostHistoryController@DeleteAPIHouse');
 });
