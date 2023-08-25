@@ -46,4 +46,9 @@ Route::group([
     Route::post('GetHouseData', 'App\Http\Controllers\user\PostHistoryController@GetAPIHouseData');
     Route::post('UpdateHouse', 'App\Http\Controllers\user\PostHistoryController@UpdateAPIHouse');
     Route::post('DeleteHouse', 'App\Http\Controllers\user\PostHistoryController@DeleteAPIHouse');
+
+    Route::get('GetActiveUsersList', 'App\Http\Controllers\admin\UserController@GetActiveUsersListAPI');
+    Route::post('UpdateUserDetails', 'App\Http\Controllers\admin\UserController@UpdateUserDetailsAPI');
+    Route::post('BlackListUser', 'App\Http\Controllers\admin\UserController@BlackListUserAPI');
+    Route::post('DeleteUser', 'App\Http\Controllers\admin\UserController@DeleteUserAPI');
 });

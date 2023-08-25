@@ -268,15 +268,19 @@ class PostHistoryController extends Controller
     }
     public function DeleteAPIHouse(Request $request){
         $output = array('status' => '', 'aaData[]' => array());
-        
-        $house=House::where('id',$request['id'])->forceDelete();
+        if(auth()->check() == 1){
+            $house=House::where('id',$request['id'])->forceDelete();
                  
-        if($house == 1){
-            $output['status'] = 'Success';
-            $output['message'] = 'Data deleted successfully';
+            if($house == 1){
+                $output['status'] = 'Success';
+                $output['message'] = 'Data deleted successfully';
+            }else{
+                $output['status'] = 'Failure';
+                $output['message'] = 'Sorry something went wrong';
+            }
         }else{
-            $output['status'] = 'Failure';
-            $output['message'] = 'Sorry something went wrong';
+            $output['status'] = 'Error';
+            $output['message'] = 'Invalid Access Please log in';
         }
        return $output;
     }

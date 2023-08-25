@@ -156,4 +156,102 @@ class UserController extends Controller
         }
        return $output;
     }
+//API Data----------------------
+    public function GetActiveUsersListAPI(Request $request){
+        $output = array('status' => '', 'aaData[]' => array());
+        if(auth()->check() == 1){
+            $user = User::select('id', 'name', 'email', 'user_type', 'status')
+                    ->where('status', '=', 1)
+                    ->orderBy('name','ASC')
+                    ->get();
+
+            $data = $user->toArray();
+            $slno = 1; 
+            foreach($data as $row){  
+                $row['sl_no'] = $slno;
+                $output['aaData'][] = $row;
+                $output['status'] = 'Success';
+                $slno++;
+            }
+        }else{
+            $output['status'] = 'Error';
+            $output['message'] = 'Invalid Access Please log in';
+        }
+        return $output;
+    }
+
+    public function UpdateUserDetailsAPI(Request $request){
+        $output = array('status' => '', 'message' => '');
+        if(auth()->check() == 1){
+            if(!$request['name']){
+                $output['status'] = 'Error';
+                $output['message'] = 'Name is required';
+                return $output;
+            }
+    
+            if(!$request['email']){
+                $output['status'] = 'Error';
+                $output['message'] = 'Email is required';
+                return $output;
+            }
+            if(!$request['user_type']){
+                $output['status'] = 'Error';
+                $output['message'] = 'User Type required';
+                return $output;
+            }
+    
+            $update = User::where("id", $request['id'])->
+            update(["name" => $request['name'], "email" => $request['email'],
+                    "user_type" => $request['user_type'], "updated_at" => date("Y-m-d H:i:s")]);
+            
+            if($update == 1){
+                $output['status'] = 'Success';
+                $output['message'] = 'User data  updated successfully';
+            }else{
+                $output['status'] = 'Failure';
+                $output['message'] = 'Oops! Something went wrong';
+            }
+        }else{
+            $output['status'] = 'Error';
+            $output['message'] = 'Invalid Access Please log in';
+        }
+    return $output;
+    }
+
+    public function BlackListUserAPI(Request $request){
+        $output = array('status' => '', 'message' => '');
+        if(auth()->check() == 1){}else{
+            $output['status'] = 'Error';
+            $output['message'] = 'Invalid Access Please log in';
+        }
+        $update = User::where("id", $request['id'])->
+        update(["status" => 0, "updated_at" => date("Y-m-d H:i:s")]);
+        
+        if($update == 1){
+            $output['status'] = 'Success';
+            $output['message'] = 'User black listed';
+        }else{
+            $output['status'] = 'Failure';
+            $output['message'] = 'Oops! Something went wrong';
+        }
+    return $output;
+    }
+
+    public function DeleteUserAPI(Request $request){
+        $output = array('status' => '', 'aaData[]' => array());
+        if(auth()->check() == 1){}else{
+            $output['status'] = 'Error';
+            $output['message'] = 'Invalid Access Please log in';
+        }
+        $user=User::where('id',$request['id'])->delete();
+                
+        if($user == 1){
+            $output['status'] = 'Success';
+            $output['message'] = 'User deleted';
+        }else{
+            $output['status'] = 'Failure';
+            $output['message'] = 'Sorry something went wrong';
+        }
+    return $output;
+    }
 }
