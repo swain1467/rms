@@ -149,7 +149,7 @@ class UserController extends Controller
         
         if($update == 1){
             $output['status'] = 'Success';
-            $output['message'] = 'User black listed';
+            $output['message'] = 'User white listed';
         }else{
             $output['status'] = 'Failure';
             $output['message'] = 'Oops! Something went wrong';
@@ -253,5 +253,40 @@ class UserController extends Controller
             $output['message'] = 'Sorry something went wrong';
         }
     return $output;
+    }
+
+    public function GetBlackListUsersListAPI(Request $request){
+        $output = array('status' => '', 'aaData[]' => array());
+        
+        $user = User::select('id', 'name', 'email', 'user_type', 'status')
+                ->where('status', '=', 0)
+                ->orderBy('name','ASC')
+                ->get();
+
+        $data = $user->toArray();
+        $slno = 1; 
+        foreach($data as $row){  
+            $row['sl_no'] = $slno;
+            $output['aaData'][] = $row;
+            $output['status'] = 'Success';
+            $slno++;
+        }
+        return $output;
+    }
+
+    public function WhiteListUserAPI(Request $request){
+        $output = array('status' => '', 'message' => '');
+
+        $update = User::where("id", $request['id'])->
+        update(["status" => 1, "updated_at" => date("Y-m-d H:i:s")]);
+        
+        if($update == 1){
+            $output['status'] = 'Success';
+            $output['message'] = 'User white listed';
+        }else{
+            $output['status'] = 'Failure';
+            $output['message'] = 'Oops! Something went wrong';
+        }
+       return $output;
     }
 }

@@ -51,4 +51,11 @@ Route::group([
     Route::post('UpdateUserDetails', 'App\Http\Controllers\admin\UserController@UpdateUserDetailsAPI');
     Route::post('BlackListUser', 'App\Http\Controllers\admin\UserController@BlackListUserAPI');
     Route::post('DeleteUser', 'App\Http\Controllers\admin\UserController@DeleteUserAPI');
+
+    Route::get('GetBlackListUsersList', 'App\Http\Controllers\admin\UserController@GetBlackListUsersListAPI');
+    Route::post('WhiteListUser', 'App\Http\Controllers\admin\UserController@WhiteListUserAPI');
+
+    Route::get('GetCityList', 'App\Http\Controllers\admin\SetupController@GetCityListAPI');
+    Route::post('SaveCity', 'App\Http\Controllers\admin\SetupController@SaveCityAPI');
+    Route::post('GetAreaList', 'App\Http\Controllers\admin\SetupController@GetAreaListAPI');
 });
