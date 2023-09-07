@@ -280,4 +280,103 @@ class SetupController extends Controller
         }
         return $output;
     }
+    public function SaveAreaAPI(Request $request){
+        $output = array('status' => '', 'message' => '');
+        if(!$request['city_id']){
+            $output['status'] = 'Error';
+            $output['message'] = 'City is required';
+            return $output;
+        }
+        if(!$request['area_name']){
+            $output['status'] = 'Error';
+            $output['message'] = 'Area is required';
+            return $output;
+        }
+        
+        if($request['area_id'] == ''){
+            $type = new Area;
+            $type->area_name = $request['area_name'];
+            $type->city_id = $request['city_id'];
+            $type->status = $request['area_status'];
+            $type->created_at = date("Y-m-d H:i:s");
+            $type->created_by = $request['id'];
+            $type->updated_at = date("Y-m-d H:i:s");
+            $type->updated_by = $request['id'];
+            $type->save();
+            $output['status'] = 'Success';
+            $output['message'] = 'Area  added successfully';
+        }else{
+            $update = Area::where("id", $request['area_id'])->
+            update(["area_name" => $request['area_name'], "status" => $request['area_status'],
+                    "updated_by" => $request['id'], "updated_at" => date("Y-m-d H:i:s")]);
+            
+            if($update == 1){
+                $output['status'] = 'Success';
+                $output['message'] = 'Area  updated successfully';
+            }else{
+                $output['status'] = 'Failure';
+                $output['message'] = 'Oops! Something went wrong';
+            }
+        }
+       return $output;
+    }
+
+    public function GetHouseTypeListAPI(Request $request){
+        $output = array('status' => '', 'aaData[]' => array());
+        
+        if(auth()->check() == 1){
+            $type = Type::select('id', 'type', 'status')
+                ->orderBy('type','ASC')
+                ->get();
+
+            $data = $type->toArray();
+            $slno = 1; 
+            foreach($data as $row){  
+                $row['sl_no'] = $slno;
+                $output['aaData'][] = $row;
+                $output['status'] = 'Success';
+                $slno++;
+            }
+        }else{
+            $output['status'] = 'Error';
+            $output['message'] = 'Invalid Access Please log in';
+        }
+        return $output;
+    }
+
+    public function SaveHouseTypeAPI(Request $request){
+        $output = array('status' => '', 'message' => '');
+        
+        if(!$request['type']){
+            $output['status'] = 'Error';
+            $output['message'] = 'House type is required';
+            return $output;
+        }
+        
+        if($request['type_id'] == ''){
+            $type = new Type;
+            $type->type = $request['type'];
+            $type->status = $request['type_status'];
+            $type->created_at = date("Y-m-d H:i:s");
+            $type->created_by = $request['id'];
+            $type->updated_at = date("Y-m-d H:i:s");
+            $type->updated_by = $request['id'];
+            $type->save();
+            $output['status'] = 'Success';
+            $output['message'] = 'Type  added successfully';
+        }else{
+            $update = Type::where("id", $request['type_id'])->
+            update(["type" => $request['type'], "status" => $request['type_status'],
+                    "updated_by" => $request['id'], "updated_at" => date("Y-m-d H:i:s")]);
+            
+            if($update == 1){
+                $output['status'] = 'Success';
+                $output['message'] = 'Type  updated successfully';
+            }else{
+                $output['status'] = 'Failure';
+                $output['message'] = 'Oops! Something went wrong';
+            }
+        }
+       return $output;
+    }
 }

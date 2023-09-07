@@ -220,4 +220,47 @@ class TransitionController extends Controller
         }
         return $output;
     }
+//API Data--------------------------------------------------- 
+    public function GetHouseDetailsListAPI(Request $request){
+        $output = array('status' => '', 'aaData[]' => array());
+        $search_keyword = $request['search'];
+        if(auth()->check() == 1){
+            $house_details = House::with('user:email,id','city:city_name,id','area:area_name,id','type:type,id')
+            ->select("id", "advance","city_id", "area_id", "type_id", "rent", "from_date", "contact_no", "detailed_address", "image", "status", "created_by")
+            ->where('from_date','>', date("Y-m-d")) 
+            ->where('city_id','=', $request['city_id']) 
+            ->Where(function ($query) use ($search_keyword) {
+                $query->orWhere('contact_no', 'LIKE', '%'. $search_keyword .'%')
+                ->orWhere('from_date', 'LIKE', '%'. $search_keyword .'%');
+            })->get(); 
+
+            $data = $house_details->toArray();
+            $slno = 1; 
+            foreach($data as $row){  
+                $row['sl_no'] = $slno;
+                $output['aaData'][] = $row;
+                $output['status'] = 'Success';
+                $slno++;
+            }
+        }else{
+            $output['status'] = 'Error';
+            $output['message'] = 'Invalid Access Please log in';
+        }
+        return $output;
+    }
+
+    public function DeleteHDAPI(Request $request){
+        $output = array('status' => '', 'aaData[]' => array());
+        
+        $house=House::where('id',$request['id'])->forceDelete();
+                 
+        if($house == 1){
+            $output['status'] = 'Success';
+            $output['message'] = 'Data deleted successfully';
+        }else{
+            $output['status'] = 'Failure';
+            $output['message'] = 'Sorry something went wrong';
+        }
+       return $output;
+    }
 }

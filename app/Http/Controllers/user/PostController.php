@@ -103,6 +103,7 @@ class PostController extends Controller
         if(auth()->check() == 1){
             $city = City::select('id', 'city_name')
             ->where('status', '=', 1)
+            ->orderBy('city_name')
             ->get();
 
             $data = $city->toArray();

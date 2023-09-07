@@ -58,4 +58,9 @@ Route::group([
     Route::get('GetCityList', 'App\Http\Controllers\admin\SetupController@GetCityListAPI');
     Route::post('SaveCity', 'App\Http\Controllers\admin\SetupController@SaveCityAPI');
     Route::post('GetAreaList', 'App\Http\Controllers\admin\SetupController@GetAreaListAPI');
+    Route::post('SaveArea', 'App\Http\Controllers\admin\SetupController@SaveAreaAPI');
+    Route::get('GetHouseTypeList', 'App\Http\Controllers\admin\SetupController@GetHouseTypeListAPI');
+    Route::post('SaveHouseType', 'App\Http\Controllers\admin\SetupController@SaveHouseTypeAPI');
+    Route::post('GetHouseDetailsList', 'App\Http\Controllers\admin\TransitionController@GetHouseDetailsListAPI');
+    Route::post('DeleteHD', 'App\Http\Controllers\admin\TransitionController@DeleteHDAPI');
 });
