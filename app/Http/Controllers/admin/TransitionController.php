@@ -231,7 +231,16 @@ class TransitionController extends Controller
             ->where('city_id','=', $request['city_id']) 
             ->Where(function ($query) use ($search_keyword) {
                 $query->orWhere('contact_no', 'LIKE', '%'. $search_keyword .'%')
-                ->orWhere('from_date', 'LIKE', '%'. $search_keyword .'%');
+                ->orWhere('from_date', 'LIKE', '%'. date("Y-m-d", strtotime($search_keyword)) .'%')
+                ->orWhereHas('user', function($innerQuery) use ($search_keyword) {
+                    $innerQuery->where('users.email', 'LIKE', '%'. $search_keyword .'%');
+                })->orWhereHas('city', function($innerQuery) use ($search_keyword) {
+                    $innerQuery->where('cities.city_name', 'LIKE', '%'. $search_keyword .'%');
+                })->orWhereHas('area', function($innerQuery) use ($search_keyword) {
+                    $innerQuery->where('areas.area_name', 'LIKE', '%'. $search_keyword .'%');
+                })->orWhereHas('type', function($innerQuery) use ($search_keyword) {
+                    $innerQuery->where('types.type', 'LIKE', '%'. $search_keyword .'%');
+                });
             })->get(); 
 
             $data = $house_details->toArray();
@@ -250,17 +259,87 @@ class TransitionController extends Controller
     }
 
     public function DeleteHDAPI(Request $request){
-        $output = array('status' => '', 'aaData[]' => array());
-        
-        $house=House::where('id',$request['id'])->forceDelete();
-                 
-        if($house == 1){
-            $output['status'] = 'Success';
-            $output['message'] = 'Data deleted successfully';
+        $output = array('status' => '', 'message' => '');
+        if(auth()->check() == 1){
+            $house=House::where('id',$request['id'])->forceDelete();
+                    
+            if($house == 1){
+                $output['status'] = 'Success';
+                $output['message'] = 'Data deleted successfully';
+            }else{
+                $output['status'] = 'Failure';
+                $output['message'] = 'Sorry something went wrong';
+            }
         }else{
-            $output['status'] = 'Failure';
-            $output['message'] = 'Sorry something went wrong';
-        }
+                $output['status'] = 'Error';
+                $output['message'] = 'Invalid Access Please log in';
+            }
        return $output;
+    }
+
+    public function UpdateHouseDetailsAPI(Request $request){
+        $output = array('status' => '', 'message' => '');
+        if(auth()->check() == 1){
+            if(!$request['selCity']){
+                $output['status'] = 'Error';
+                $output['message'] = 'City/Town is required';
+                return $output;
+            }
+            if(!$request['selArea']){
+                $output['status'] = 'Error';
+                $output['message'] = 'Area is required';
+                return $output;
+            }
+            if(!$request['selHouseType']){
+                $output['status'] = 'Error';
+                $output['message'] = 'City/Town is required';
+                return $output;
+            }
+            if(!$request['txtAdvance']){
+                $output['status'] = 'Error';
+                $output['message'] = 'Advance is required';
+                return $output;
+            }
+            if(!$request['txtRentAmount']){
+                $output['status'] = 'Error';
+                $output['message'] = 'Rent is required';
+                return $output;
+            }
+            if(!$request['txtAvailableFromDate']){
+                $output['status'] = 'Error';
+                $output['message'] = 'Available from date is required';
+                return $output;
+            }
+            if(!$request['txtContactNo']){
+                $output['status'] = 'Error';
+                $output['message'] = 'Contact number is required';
+                return $output;
+            }
+            if(!$request['txtDetailedAddress']){
+                $output['status'] = 'Error';
+                $output['message'] = 'Detailed address is required';
+                return $output;
+            }
+
+            $house = House::find($request['id']);
+            $house->city_id = $request['selCity'];
+            $house->area_id = $request['selArea'];
+            $house->type_id = $request['selHouseType'];
+            $house->advance = $request['txtAdvance'];
+            $house->rent = $request['txtRentAmount'];
+            $house->from_date = $request['txtAvailableFromDate'];
+            $house->contact_no = $request['txtContactNo'];
+            $house->detailed_address = $request['txtDetailedAddress'];
+            $house->updated_by = $request['user_id'];
+            $house->updated_at = date("Y-m-d H:i:s");
+            $house->save();
+        
+            $output['status'] = 'Success';
+            $output['message'] = 'Data updated successfully';
+        }else{
+            $output['status'] = 'Error';
+            $output['message'] = 'Invalid Access Please log in';
+        }
+        return $output;
     }
 }

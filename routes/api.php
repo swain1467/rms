@@ -63,4 +63,5 @@ Route::group([
     Route::post('SaveHouseType', 'App\Http\Controllers\admin\SetupController@SaveHouseTypeAPI');
     Route::post('GetHouseDetailsList', 'App\Http\Controllers\admin\TransitionController@GetHouseDetailsListAPI');
     Route::post('DeleteHD', 'App\Http\Controllers\admin\TransitionController@DeleteHDAPI');
+    Route::post('UpdateHouseDetails', 'App\Http\Controllers\admin\TransitionController@UpdateHouseDetailsAPI');
 });
