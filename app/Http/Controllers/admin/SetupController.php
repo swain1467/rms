@@ -218,6 +218,7 @@ class SetupController extends Controller
         $area = Area::with('city:city_name,id')
         ->select("id", "area_name", "status", "city_id")
         ->where('city_id', $request['city_id'])
+        ->orderBy('area_name')
         ->get();
 
         $data = $area->toArray();
